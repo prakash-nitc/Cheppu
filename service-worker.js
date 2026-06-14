@@ -1,5 +1,5 @@
 // Minimal offline cache for Cheppu. Bump CACHE when you change files.
-const CACHE = "cheppu-v3";
+const CACHE = "cheppu-v4";
 const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./icons/favicon.svg", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png"
