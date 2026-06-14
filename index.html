@@ -1447,6 +1447,7 @@ function doCheck(){
   document.querySelectorAll(".opt").forEach(o=>{ if(o.dataset.pick===L.sel.ans)o.classList.add("right");
     if(o.classList.contains("sel")&&!ok)o.classList.add("wrong"); o.style.pointerEvents="none"; });
   grade(ok, q.it);
+  if(q.type==="fillin" && ok) setTimeout(()=>speak(q.ex.te),150);
 }
 
 function handleMatch(cell){
