@@ -662,8 +662,10 @@ function buildQueue(items, opts){
 function startLesson(id){
   const lesson=LESSONS.find(l=>l.id===id);
   const queue=buildQueue(lesson.items);
+  const firstTime=!S.crowns[id];
   S.lesson={lesson, queue, total:queue.length, done:0, miss:0, hearts:5, sel:null, checked:false, correct:false,
-    combo:0, bestCombo:0, level:(S.crowns[id]||0), review:false};
+    combo:0, bestCombo:0, level:(S.crowns[id]||0), review:false,
+    phase:firstTime?"teach":"drill", teachItems:lesson.items, teachI:0};
   S.screen="lesson"; render();
 }
 function startReview(){
