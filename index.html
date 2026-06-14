@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>Cheppu — Speak Telugu</title>
+<meta name="description" content="Learn to speak Telugu confidently — listen, understand, build sentences, and say it out loud. No reading or writing required." />
+<meta name="theme-color" content="#F4A81D" />
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icons/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="./icons/icon-192.png" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Baloo+Tammudu+2:wght@500;600;700&family=Mukta:wght@400;500;600;700&display=swap');
+
+  :root{
+    --paper:#FFFBF3; --paper-2:#FDF3E2; --card:#FFFFFF;
+    --ink:#241B33; --ink-soft:#7A7186;
+    --marigold:#F4A81D; --marigold-deep:#D6890A;
+    --vermilion:#E14B3B; --teal:#0E8C72; --teal-deep:#0A6E59; --indigo:#4B3D9E;
+    --line:rgba(36,27,51,.10); --shadow:0 10px 30px rgba(36,27,51,.10); --r:22px;
+    --tel:"Baloo Tammudu 2","Noto Sans Telugu","Gautami",sans-serif;
+    --disp:"Baloo 2",ui-rounded,system-ui,sans-serif;
+    --body:"Mukta",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased;
+    background:radial-gradient(1200px 500px at 50% -200px,#FFF3DC 0%,transparent 60%),var(--paper);}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input{font-family:inherit}
+  :focus-visible{outline:3px solid var(--indigo);outline-offset:2px;border-radius:8px}
+
+  #shell{max-width:460px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;
+    position:relative;background:var(--paper);box-shadow:0 0 0 1px var(--line)}
+  @media(min-width:620px){#shell{margin:22px auto;border-radius:34px;overflow:hidden;
+    min-height:calc(100vh - 44px);box-shadow:var(--shadow),0 0 0 1px var(--line)}}
+
+  .topbar{display:flex;align-items:center;gap:14px;padding:16px 18px 12px;position:sticky;top:0;z-index:5;
+    background:linear-gradient(var(--paper),rgba(255,251,243,.92));backdrop-filter:blur(6px)}
+  .stat{display:flex;align-items:center;gap:6px;font-weight:700;font-size:15px}
+  .stat .ic{font-size:18px;line-height:1}
+  .stat.fire{color:var(--vermilion)} .stat.xp{color:var(--marigold-deep)} .stat.gem{color:var(--indigo)}
+  .brandmark{font-family:var(--disp);font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;margin-right:auto}
+  .brandmark b{font-family:var(--tel);color:var(--marigold-deep);font-weight:700}
+
+  main{flex:1;padding:6px 18px 96px;overflow:auto}
+
+  .hero{text-align:center;padding:14px 8px 4px}
+  .hero .big{font-family:var(--tel);font-size:60px;line-height:1;color:var(--marigold);font-weight:700;text-shadow:0 6px 0 rgba(244,168,29,.18)}
+  .hero h1{font-family:var(--disp);font-weight:800;margin:8px 0 2px;font-size:23px}
+  .hero p{color:var(--ink-soft);margin:0;font-size:14.5px;font-weight:600}
+
+  /* daily goal + review banner */
+  .dailywrap{display:flex;gap:12px;margin:18px 2px 4px}
+  .goalcard{flex:1;display:flex;align-items:center;gap:14px;background:var(--card);border:2px solid var(--line);
+    border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+  .ring{width:54px;height:54px;flex:none}
+  .goalcard .gt{font-family:var(--disp);font-weight:800;font-size:15px;line-height:1.1}
+  .goalcard .gs{color:var(--ink-soft);font-weight:700;font-size:12.5px;margin-top:2px}
+  .reviewcard{display:flex;align-items:center;gap:12px;width:100%;background:linear-gradient(135deg,#fff,#FDF3E2);
+    border:2px solid var(--line);border-bottom-width:4px;border-radius:18px;padding:14px;box-shadow:var(--shadow);margin:12px 2px 0;text-align:left}
+  .reviewcard .ri{font-size:30px;flex:none}
+  .reviewcard .rt{font-family:var(--disp);font-weight:800;font-size:16px}
+  .reviewcard .rs{color:var(--ink-soft);font-weight:700;font-size:12.5px;margin-top:1px}
+  .reviewcard .rb{margin-left:auto;background:var(--marigold);color:#fff;font-family:var(--disp);font-weight:800;
+    font-size:13px;padding:9px 14px;border-radius:12px;box-shadow:0 3px 0 var(--marigold-deep)}
+  .reviewcard.locked{opacity:.55;filter:saturate(.4)}
+
+  .unit{margin-top:24px}
+  .unit-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:var(--r);color:#fff;box-shadow:var(--shadow)}
+  .unit-head .n{font-family:var(--disp);font-weight:800;font-size:12px;opacity:.85;letter-spacing:1.5px;text-transform:uppercase}
+  .unit-head h2{font-family:var(--disp);margin:2px 0 0;font-size:18px;font-weight:800}
+  .unit-head .tel{font-family:var(--tel);font-size:26px;margin-left:auto;font-weight:700;opacity:.95}
+
+  .path{position:relative;padding:18px 0 6px;display:flex;flex-direction:column;align-items:center}
+  .node-row{display:flex;justify-content:center;width:100%;margin:14px 0}
+  .l1{transform:translateX(-60px)} .r1{transform:translateX(60px)}
+  .l2{transform:translateX(-32px)} .r2{transform:translateX(32px)}
+  .node{width:76px;height:68px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;
+    font-family:var(--disp);font-weight:800;font-size:25px;color:#fff;box-shadow:0 7px 0 rgba(0,0,0,.18),var(--shadow);transition:transform .08s}
+  .node:active{transform:translateY(3px);box-shadow:0 4px 0 rgba(0,0,0,.18)}
+  .node.locked{background:#E7DECF;color:#B9AE99;box-shadow:0 7px 0 #d6cab2;cursor:not-allowed}
+  .node.locked:active{transform:none}
+  .node.done::after{content:"✓";position:absolute;top:-6px;right:-6px;background:var(--teal);color:#fff;width:26px;height:26px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:3px solid var(--paper)}
+  .node .lbl{position:absolute;bottom:-26px;font-weight:700;font-size:12.5px;color:var(--ink-soft);white-space:nowrap;text-align:center}
+  .node .crowns{position:absolute;bottom:-42px;font-size:11px;color:var(--marigold-deep);font-weight:800;letter-spacing:1px;white-space:nowrap}
+  .node.cur::before{content:"START";position:absolute;top:-33px;background:#fff;color:var(--teal-deep);font-family:var(--disp);
+    font-weight:800;font-size:11px;padding:5px 11px;border-radius:12px;box-shadow:var(--shadow);animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+  .lesson-top{display:flex;align-items:center;gap:14px;padding:14px 18px 6px}
+  .close{font-size:26px;color:var(--ink-soft);font-weight:700;line-height:1}
+  .pbar{flex:1;height:14px;background:#EBE2D2;border-radius:99px;overflow:hidden}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),#27b894);border-radius:99px;transition:width .35s}
+  .lhearts{color:var(--vermilion);font-weight:800;font-size:16px}
+  .combo{position:absolute;top:52px;right:18px;background:var(--marigold);color:#fff;font-family:var(--disp);font-weight:800;
+    font-size:12px;padding:4px 10px;border-radius:99px;box-shadow:0 3px 0 var(--marigold-deep);animation:pop .25s}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  .q{padding:18px 20px 10px}
+  .q .prompt{font-family:var(--disp);font-weight:800;font-size:20px;margin:0 0 16px}
+  .q .prompt em{color:var(--indigo);font-style:normal}
+  .wordcard{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:24px 18px;text-align:center;box-shadow:var(--shadow);position:relative}
+  .wordcard .roman{font-size:32px;line-height:1.2;color:var(--ink);font-weight:700;letter-spacing:.3px}
+  .wordcard .tel{font-family:var(--tel);font-size:22px;margin-top:6px;color:var(--ink-soft);font-weight:600}
+  .wordcard .en{margin-top:8px;color:var(--ink-soft);font-weight:700}
+  .speaker{width:42px;height:42px;border-radius:14px;background:var(--marigold);color:#fff;font-size:20px;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 var(--marigold-deep)}
+  .speaker:active{transform:translateY(2px);box-shadow:0 2px 0 var(--marigold-deep)}
+  .speaker.tr{position:absolute;top:14px;right:14px}
+  .speaker.big{width:90px;height:90px;border-radius:28px;font-size:40px;margin:4px auto 0;box-shadow:0 6px 0 var(--marigold-deep)}
+  .speaker.slow{width:46px;height:34px;border-radius:11px;font-size:14px;font-weight:800;font-family:var(--disp);background:#EBE2D2;color:var(--ink-soft);box-shadow:0 3px 0 #d6cab2;display:inline-flex;gap:3px}
+
+  .options{display:grid;gap:12px;margin-top:18px}
+  .opt{background:var(--card);border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;padding:15px 16px;
+    text-align:left;font-weight:700;font-size:17px;color:var(--ink);transition:transform .06s;display:flex;flex-direction:column;gap:2px}
+  .opt .sub{color:var(--ink-soft);font-size:13px;font-weight:600}
+  .opt:active{transform:scale(.99)}
+  .opt.sel{border-color:var(--indigo);background:#F1EFFB}
+  .opt.right{border-color:var(--teal);background:#E6F6F1;color:var(--teal-deep)}
+  .opt.wrong{border-color:var(--vermilion);background:#FCEBE8;color:var(--vermilion)}
+
+  /* build (word tiles) */
+  .answerbox{min-height:62px;border-bottom:2px dashed var(--line);margin:6px 0 4px;padding:8px 2px 14px;
+    display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+  .answerbox.empty::before{content:"Tap the words in order";color:#c8bda8;font-weight:700;font-size:14px;align-self:center;margin:auto}
+  .bank{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;justify-content:center}
+  .tile{background:var(--card);border:2px solid var(--line);border-bottom-width:4px;border-radius:13px;
+    padding:11px 15px;font-weight:800;font-size:17px;color:var(--ink);transition:transform .06s}
+  .tile:active{transform:translateY(2px)}
+  .tile.used{opacity:0;pointer-events:none}
+  .tile.placed{background:#F1EFFB;border-color:var(--indigo)}
+  .tile.lock{pointer-events:none}
+
+  /* match */
+  .matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  .mcell{background:var(--card);border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;
+    padding:16px 12px;font-weight:800;font-size:16px;min-height:58px;display:flex;align-items:center;justify-content:center;text-align:center;transition:transform .06s}
+  .mcell.tel{font-family:var(--body)}
+  .mcell:active{transform:scale(.98)}
+  .mcell.sel{border-color:var(--indigo);background:#F1EFFB}
+  .mcell.gone{opacity:0;pointer-events:none;transition:opacity .25s}
+  .mcell.bad{border-color:var(--vermilion);background:#FCEBE8;animation:shake .3s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  /* speak */
+  .mic{width:96px;height:96px;border-radius:50%;background:var(--vermilion);color:#fff;font-size:42px;margin:8px auto;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 #b73122;transition:transform .08s}
+  .mic:active{transform:translateY(3px);box-shadow:0 3px 0 #b73122}
+  .mic.live{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 6px 0 #b73122,0 0 0 0 rgba(225,75,59,.4)}50%{box-shadow:0 6px 0 #b73122,0 0 0 16px rgba(225,75,59,0)}}
+  .heard{text-align:center;font-weight:700;color:var(--ink-soft);margin-top:10px;font-size:14.5px;min-height:20px}
+  .heard b{font-family:var(--tel);color:var(--ink)}
+
+  .speak-help{text-align:center;color:var(--ink-soft);font-weight:600;margin-top:16px;font-size:14.5px}
+  .skiprow{text-align:center;margin-top:14px}
+  .skiprow button{color:var(--ink-soft);font-weight:700;text-decoration:underline;font-size:13.5px}
+
+  .footer-pad{height:8px}
+  .feedback{position:sticky;bottom:0;padding:16px 18px calc(16px + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--line)}
+  .feedback.ok{background:#E6F6F1} .feedback.no{background:#FCEBE8}
+  .fmsg{display:flex;flex-direction:column;gap:2px;font-family:var(--disp);font-weight:800;font-size:18px;margin-bottom:12px}
+  .feedback.ok .fmsg{color:var(--teal-deep)} .feedback.no .fmsg{color:var(--vermilion)}
+  .fmsg .ans{font-family:var(--body);font-weight:700;font-size:13.5px;color:var(--ink-soft)}
+  .btn{width:100%;padding:16px;border-radius:16px;font-family:var(--disp);font-weight:800;font-size:17px;color:#fff;
+    background:var(--teal);box-shadow:0 5px 0 var(--teal-deep);letter-spacing:.3px;text-transform:uppercase}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--teal-deep)}
+  .btn.marigold{background:var(--marigold);box-shadow:0 5px 0 var(--marigold-deep)}
+  .btn.red{background:var(--vermilion);box-shadow:0 5px 0 #b73122}
+  .btn.ghost{background:#EBE2D2;color:var(--ink);box-shadow:0 5px 0 #d6cab2}
+  .btn[disabled]{opacity:.45;box-shadow:none;pointer-events:none}
+
+  .center-screen{padding:40px 22px;text-align:center}
+  .center-screen .emoji{font-size:66px}
+  .center-screen h2{font-family:var(--disp);font-weight:800;font-size:27px;margin:10px 0 4px}
+  .center-screen p{color:var(--ink-soft);font-weight:600;margin:0 0 22px}
+  .pills{display:flex;gap:12px;justify-content:center;margin:18px 0 26px;flex-wrap:wrap}
+  .pill{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px 16px;min-width:90px;box-shadow:var(--shadow)}
+  .pill .k{font-family:var(--disp);font-weight:800;font-size:23px}
+  .pill .v{color:var(--ink-soft);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  .pill.xp .k{color:var(--marigold-deep)} .pill.acc .k{color:var(--teal-deep)} .pill.crown .k{color:var(--indigo)}
+  .crownrow{display:flex;gap:6px;justify-content:center;font-size:24px;margin:-8px 0 22px}
+  .crownrow span{filter:grayscale(1);opacity:.35} .crownrow span.on{filter:none;opacity:1}
+
+  .ph-head{font-family:var(--disp);font-weight:800;font-size:23px;margin:16px 2px 4px}
+  .ph-sub{color:var(--ink-soft);font-weight:600;margin:0 2px 14px;font-size:14px}
+  .searchbar{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin:0 2px 12px}
+  .searchbar input{flex:1;border:none;background:none;font-size:15px;font-weight:600;outline:none}
+  .ph-unit{font-family:var(--disp);font-weight:800;font-size:12.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--indigo);margin:22px 2px 8px}
+  .ph-item{display:flex;align-items:center;gap:14px;background:var(--card);border:2px solid var(--line);border-radius:16px;
+    padding:12px 14px;margin-bottom:10px;box-shadow:0 4px 14px rgba(36,27,51,.05)}
+  .ph-item .play{width:40px;height:40px;flex:none;border-radius:13px;background:var(--marigold);color:#fff;font-size:18px;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 var(--marigold-deep)}
+  .ph-item .play:active{transform:translateY(2px);box-shadow:0 1px 0 var(--marigold-deep)}
+  .ph-item .txt .rm{font-weight:700;font-size:16px;line-height:1.25}
+  .ph-item .txt .tel{font-family:var(--tel);font-size:16px;color:var(--ink-soft);font-weight:600}
+  .ph-item .en{margin-left:auto;text-align:right;font-weight:700;font-size:13.5px;max-width:42%;color:var(--ink-soft)}
+  .strength{display:inline-block;width:7px;height:7px;border-radius:50%;background:#E7DECF;margin-left:3px}
+  .strength.on{background:var(--teal)}
+
+  /* chat */
+  .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 150px)}
+  .scenario{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;margin-bottom:4px}
+  .scenario button{flex:none;border:2px solid var(--line);background:var(--card);border-radius:99px;padding:8px 14px;font-weight:700;font-size:13px;color:var(--ink-soft)}
+  .scenario button.on{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+  .msgs{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:6px 2px}
+  .bubble{max-width:84%;padding:11px 14px;border-radius:18px;font-weight:600;font-size:15px;line-height:1.45}
+  .bubble.me{align-self:flex-end;background:var(--indigo);color:#fff;border-bottom-right-radius:5px}
+  .bubble.them{align-self:flex-start;background:var(--card);border:2px solid var(--line);border-bottom-left-radius:5px}
+  .bubble.them .play{display:inline-flex;width:26px;height:26px;border-radius:8px;background:var(--marigold);color:#fff;
+    align-items:center;justify-content:center;font-size:13px;margin-left:6px;vertical-align:middle}
+  .bubble.sys{align-self:center;background:#FDF3E2;color:var(--ink-soft);font-size:13px;text-align:center;border-radius:14px}
+  .composer{display:flex;gap:8px;padding:10px 2px calc(6px + env(safe-area-inset-bottom));align-items:flex-end}
+  .composer input{flex:1;border:2px solid var(--line);border-radius:16px;padding:13px 14px;font-size:15px;font-weight:600;background:var(--card)}
+  .composer .micbtn{width:50px;height:50px;flex:none;border-radius:16px;background:var(--vermilion);color:#fff;font-size:19px;box-shadow:0 4px 0 #b73122}
+  .composer .micbtn.live{animation:pulse 1s infinite}
+  .composer .send{width:50px;height:50px;flex:none;border-radius:16px;background:var(--teal);color:#fff;font-size:20px;box-shadow:0 4px 0 var(--teal-deep)}
+  .composer .send:active{transform:translateY(2px);box-shadow:0 2px 0 var(--teal-deep)}
+
+  .prof-card{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);margin-top:8px}
+  .prof-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-weight:700;gap:12px}
+  .prof-row:last-child{border-bottom:none}
+  .prof-row .v{font-family:var(--disp);font-weight:800}
+  .toggle{width:50px;height:28px;border-radius:99px;background:#EBE2D2;position:relative;transition:background .2s;flex:none}
+  .toggle.on{background:var(--teal)}
+  .toggle i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .toggle.on i{left:25px}
+  .stepper{display:flex;align-items:center;gap:10px}
+  .stepper button{width:30px;height:30px;border-radius:9px;background:#EBE2D2;font-weight:800;font-size:18px;color:var(--ink)}
+  .keyfield{display:flex;gap:8px;margin-top:8px}
+  .keyfield input{flex:1;border:2px solid var(--line);border-radius:12px;padding:11px 12px;font-size:14px;font-weight:600;background:var(--card)}
+  .keyfield button{background:var(--indigo);color:#fff;border-radius:12px;padding:0 16px;font-weight:800}
+  .note{font-size:13px;color:var(--ink-soft);line-height:1.65;font-weight:500;margin-top:14px}
+  .note a{color:var(--indigo);font-weight:700}
+  .linkbtn{color:var(--vermilion);font-weight:800;text-decoration:underline;font-size:14px;margin-top:14px;display:inline-block}
+  .achgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+  .ach{aspect-ratio:1;border-radius:16px;background:var(--card);border:2px solid var(--line);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;padding:6px;text-align:center}
+  .ach .ai{font-size:26px;filter:grayscale(1);opacity:.35}
+  .ach.on{background:#FFF7E6;border-color:var(--marigold)}
+  .ach.on .ai{filter:none;opacity:1}
+  .ach .at{font-size:9.5px;font-weight:800;color:var(--ink-soft);line-height:1.1}
+
+  nav{position:sticky;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:6}
+  nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--ink-soft);font-weight:700;font-size:11px}
+  nav button .ic{font-size:21px} nav button.on{color:var(--marigold-deep)}
+
+  #toast{position:fixed;left:50%;transform:translateX(-50%);top:18px;z-index:50;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(92%,420px)}
+  .toastcard{display:flex;align-items:center;gap:12px;background:var(--ink);color:#fff;border-radius:16px;padding:12px 16px;
+    box-shadow:var(--shadow);animation:toastin .35s;font-weight:700}
+  .toastcard .te{font-size:26px} .toastcard .tt b{display:block;font-family:var(--disp);font-size:14px}
+  .toastcard .tt span{font-size:12px;opacity:.8}
+  @keyframes toastin{0%{transform:translateY(-16px);opacity:0}100%{transform:translateY(0);opacity:1}}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="bar"></div>
+  <main id="app"></main>
+  <nav id="nav"></nav>
+</div>
+<div id="toast"></div>
+
+<script>
+/* =====================================================================
+   CHEPPU (చెప్పు = "say it") — spoken-Telugu trainer
+   Single self-contained file. No build step, no database.
+   - Content: baked-in JS object (below)
+   - Progress: localStorage (safe-wrapped; falls back to memory)
+   - Audio out: browser SpeechSynthesis (device Telugu voice)
+   - Audio in: SpeechRecognition for speaking practice (where supported)
+   - Conversation partner: optional, your own free Groq API key
+   ===================================================================== */
+
+/* ---------- 1. CONTENT (spoken, romanization-first) ---------- */
+const UNITS = [
+ { id:"u1", n:1, title:"Survival", te:"మొదలు", color:"#0E8C72", accent:"#0A6E59", lessons:[
+   { id:"u1l1", name:"First words", items:[
+     {rm:"namaskaaram", te:"నమస్కారం", en:"hello / greetings"},
+     {rm:"avunu", te:"అవును", en:"yes"},
+     {rm:"ledu", te:"లేదు", en:"no / not"},
+     {rm:"dhanyavaadaalu", te:"ధన్యవాదాలు", en:"thank you"},
+     {rm:"saree", te:"సరే", en:"okay"},
+     {rm:"dayachesi", te:"దయచేసి", en:"please"},
+   ]},
+   { id:"u1l2", name:"Polite basics", items:[
+     {rm:"kshaminchandi", te:"క్షమించండి", en:"sorry / excuse me"},
+     {rm:"parledu", te:"పర్లేదు", en:"it's okay / no problem"},
+     {rm:"manchidi", te:"మంచిది", en:"good / fine"},
+     {rm:"emaindi?", te:"ఏమైంది?", en:"what happened?"},
+     {rm:"oka nimisham", te:"ఒక నిమిషం", en:"one minute"},
+     {rm:"vastaanu", te:"వస్తాను", en:"I'll be going (bye)"},
+   ]},
+ ]},
+ { id:"u2", n:2, title:"You & Me", te:"నువ్వు నేను", color:"#4B3D9E", accent:"#352a73", lessons:[
+   { id:"u2l1", name:"How are you", items:[
+     {rm:"baagunnaavaa?", te:"బాగున్నావా?", en:"how are you? (casual)"},
+     {rm:"nenu baagunnaanu", te:"నేను బాగున్నాను", en:"I'm fine"},
+     {rm:"nee peru enti?", te:"నీ పేరు ఏంటి?", en:"what's your name?"},
+     {rm:"naa peru Ravi", te:"నా పేరు రవి", en:"my name is Ravi"},
+     {rm:"naaku artham kaaledu", te:"నాకు అర్థం కాలేదు", en:"I don't understand"},
+     {rm:"malli cheppu", te:"మళ్ళీ చెప్పు", en:"say it again"},
+   ]},
+   { id:"u2l2", name:"Getting to know", items:[
+     {rm:"nuvvu ekkada untaavu?", te:"నువ్వు ఎక్కడ ఉంటావు?", en:"where do you live?"},
+     {rm:"nenu Hyderabad lo untaanu", te:"నేను హైదరాబాద్ లో ఉంటాను", en:"I live in Hyderabad"},
+     {rm:"nuvvu emi chestaavu?", te:"నువ్వు ఏమి చేస్తావు?", en:"what do you do?"},
+     {rm:"naaku telugu nerchukovaali", te:"నాకు తెలుగు నేర్చుకోవాలి", en:"I want to learn Telugu"},
+     {rm:"naaku telugu konchem vache", te:"నాకు తెలుగు కొంచెం వచ్చు", en:"I know a little Telugu"},
+     {rm:"chaalaa santosham", te:"చాలా సంతోషం", en:"very nice (to meet you)"},
+   ]},
+ ]},
+ { id:"u3", n:3, title:"Family & Respect", te:"కుటుంబం", color:"#E14B3B", accent:"#b73122", lessons:[
+   { id:"u3l1", name:"Relations", items:[
+     {rm:"amma", te:"అమ్మ", en:"mother"},
+     {rm:"nanna", te:"నాన్న", en:"father"},
+     {rm:"akka", te:"అక్క", en:"elder sister"},
+     {rm:"annayya", te:"అన్నయ్య", en:"elder brother"},
+     {rm:"meeru", te:"మీరు", en:"you (respectful — for elders)"},
+     {rm:"meeru baagunnaaraa?", te:"మీరు బాగున్నారా?", en:"how are you? (respectful)"},
+   ]},
+   { id:"u3l2", name:"More family", items:[
+     {rm:"chelli", te:"చెల్లి", en:"younger sister"},
+     {rm:"tammudu", te:"తమ్ముడు", en:"younger brother"},
+     {rm:"thaatha", te:"తాత", en:"grandfather"},
+     {rm:"ammamma", te:"అమ్మమ్మ", en:"grandmother"},
+     {rm:"maa kutumbam", te:"మా కుటుంబం", en:"my family"},
+     {rm:"meeku iddaru pillalu", te:"మీకు ఇద్దరు పిల్లలు", en:"you have two children"},
+   ]},
+ ]},
+ { id:"u4", n:4, title:"Meeting Her Parents", te:"పెద్దవాళ్ళతో", color:"#C2185B", accent:"#8e1143", lessons:[
+   { id:"u4l1", name:"A good impression", items:[
+     {rm:"namaskaaram andi", te:"నమస్కారం అండి", en:"hello (polite)"},
+     {rm:"chaalaa santosham andi", te:"చాలా సంతోషం అండి", en:"very pleased to meet you"},
+     {rm:"nenu tanani baagaa chuskuntaanu", te:"నేను తనని బాగా చూసుకుంటాను", en:"I'll take good care of her"},
+     {rm:"bhojanam chaalaa ruchigaa undi", te:"భోజనం చాలా రుచిగా ఉంది", en:"the food is very tasty"},
+     {rm:"dhanyavaadaalu andi", te:"ధన్యవాదాలు అండి", en:"thank you (polite)"},
+   ]},
+   { id:"u4l2", name:"Talking with elders", items:[
+     {rm:"meeru baagunnaaraa andi?", te:"మీరు బాగున్నారా అండి?", en:"how are you? (polite)"},
+     {rm:"meeku emaina kaavaalaa?", te:"మీకు ఏమైనా కావాలా?", en:"do you need anything?"},
+     {rm:"nenu sahaayam chestaanu", te:"నేను సహాయం చేస్తాను", en:"I'll help"},
+     {rm:"meeru cheppindi artham ayyindi", te:"మీరు చెప్పింది అర్థం అయ్యింది", en:"I understood what you said"},
+     {rm:"malli kalustaanu andi", te:"మళ్ళీ కలుస్తాను అండి", en:"I'll meet you again"},
+   ]},
+ ]},
+ { id:"u5", n:5, title:"Food & Home", te:"తిండి", color:"#D6890A", accent:"#a36800", lessons:[
+   { id:"u5l1", name:"At the table", items:[
+     {rm:"annam", te:"అన్నం", en:"rice / a meal"},
+     {rm:"neellu", te:"నీళ్ళు", en:"water"},
+     {rm:"naaku aakaligaa undi", te:"నాకు ఆకలిగా ఉంది", en:"I'm hungry"},
+     {rm:"naaku neellu kaavaali", te:"నాకు నీళ్ళు కావాలి", en:"I want water"},
+     {rm:"ruchigaa undi", te:"రుచిగా ఉంది", en:"it's tasty"},
+     {rm:"kadupu nindindi", te:"కడుపు నిండింది", en:"I'm full"},
+   ]},
+   { id:"u5l2", name:"In the kitchen", items:[
+     {rm:"tea", te:"టీ", en:"tea"},
+     {rm:"paalu", te:"పాలు", en:"milk"},
+     {rm:"kuura", te:"కూర", en:"curry / vegetable dish"},
+     {rm:"idi chaalaa kaaram", te:"ఇది చాలా కారం", en:"this is very spicy"},
+     {rm:"naaku teepi ishtam", te:"నాకు తీపి ఇష్టం", en:"I like sweets"},
+     {rm:"inkonchem kaavaali", te:"ఇంకొంచెం కావాలి", en:"I'd like a little more"},
+   ]},
+ ]},
+ { id:"u6", n:6, title:"Sweet Talk", te:"ప్రేమ మాటలు", color:"#0E8C72", accent:"#0A6E59", lessons:[
+   { id:"u6l1", name:"For her", items:[
+     {rm:"naaku nuvvante ishtam", te:"నాకు నువ్వంటే ఇష్టం", en:"I like you"},
+     {rm:"nenu ninnu preemistunnaanu", te:"నేను నిన్ను ప్రేమిస్తున్నాను", en:"I love you"},
+     {rm:"nuvvu chaalaa andangaa unnaavu", te:"నువ్వు చాలా అందంగా ఉన్నావు", en:"you're very beautiful"},
+     {rm:"ninnu miss avutunnaanu", te:"నిన్ను మిస్ అవుతున్నాను", en:"I'm missing you"},
+     {rm:"nuvvante naaku praanam", te:"నువ్వంటే నాకు ప్రాణం", en:"you mean everything to me"},
+   ]},
+   { id:"u6l2", name:"More love", items:[
+     {rm:"nee navvu naaku ishtam", te:"నీ నవ్వు నాకు ఇష్టం", en:"I love your smile"},
+     {rm:"ninnu eppatikee vadalanu", te:"నిన్ను ఎప్పటికీ వదలను", en:"I'll never leave you"},
+     {rm:"nuvvu naa prapancham", te:"నువ్వు నా ప్రపంచం", en:"you're my world"},
+     {rm:"naatho untaavaa?", te:"నాతో ఉంటావా?", en:"will you be with me?"},
+     {rm:"nuvvu naa pakkana unte chaalu", te:"నువ్వు నా పక్కన ఉంటే చాలు", en:"just having you near is enough"},
+   ]},
+ ]},
+ { id:"u7", n:7, title:"Daily Life", te:"రోజువారీ", color:"#4B3D9E", accent:"#352a73", lessons:[
+   { id:"u7l1", name:"Out & about", items:[
+     {rm:"idi enta?", te:"ఇది ఎంత?", en:"how much is this?"},
+     {rm:"chaalaa ekkuva", te:"చాలా ఎక్కువ", en:"that's too much"},
+     {rm:"ekkada?", te:"ఎక్కడ?", en:"where?"},
+     {rm:"ippudu time enta?", te:"ఇప్పుడు టైం ఎంత?", en:"what's the time now?"},
+     {rm:"veldaam", te:"వెళ్దాం", en:"let's go"},
+   ]},
+   { id:"u7l2", name:"Shopping", items:[
+     {rm:"idi naaku kaavaali", te:"ఇది నాకు కావాలి", en:"I want this"},
+     {rm:"tagginchandi", te:"తగ్గించండి", en:"please reduce the price"},
+     {rm:"bill enta?", te:"బిల్ ఎంత?", en:"how much is the bill?"},
+     {rm:"card teesukuntaaraa?", te:"కార్డ్ తీసుకుంటారా?", en:"do you take card?"},
+     {rm:"naaku idi nachindi", te:"నాకు ఇది నచ్చింది", en:"I liked this"},
+   ]},
+ ]},
+ { id:"u8", n:8, title:"Small Talk & Plans", te:"కబుర్లు", color:"#E14B3B", accent:"#b73122", lessons:[
+   { id:"u8l1", name:"Wrapping up", items:[
+     {rm:"eeroju ela undi?", te:"ఈరోజు ఎలా ఉంది?", en:"how was today?"},
+     {rm:"naaku alasatagaa undi", te:"నాకు అలసటగా ఉంది", en:"I'm tired"},
+     {rm:"naaku phone chey", te:"నాకు ఫోన్ చెయ్", en:"call me"},
+     {rm:"nenu vastaanu", te:"నేను వస్తాను", en:"I'll come"},
+     {rm:"malli kaluddaam", te:"మళ్ళీ కలుద్దాం", en:"see you again"},
+   ]},
+   { id:"u8l2", name:"Making plans", items:[
+     {rm:"sinimaaki veldaamaa?", te:"సినిమాకి వెళ్దామా?", en:"shall we go to a movie?"},
+     {rm:"eppudu kaluddaam?", te:"ఎప్పుడు కలుద్దాం?", en:"when shall we meet?"},
+     {rm:"repu kaluddaam", te:"రేపు కలుద్దాం", en:"let's meet tomorrow"},
+     {rm:"naaku time ledu", te:"నాకు టైం లేదు", en:"I don't have time"},
+     {rm:"tappakundaa vastaanu", te:"తప్పకుండా వస్తాను", en:"I'll definitely come"},
+   ]},
+ ]},
+ { id:"u9", n:9, title:"Numbers", te:"అంకెలు", color:"#0277BD", accent:"#015a92", lessons:[
+   { id:"u9l1", name:"One to ten", items:[
+     {rm:"okati", te:"ఒకటి", en:"one"},
+     {rm:"rendu", te:"రెండు", en:"two"},
+     {rm:"muudu", te:"మూడు", en:"three"},
+     {rm:"naalugu", te:"నాలుగు", en:"four"},
+     {rm:"aidu", te:"ఐదు", en:"five"},
+     {rm:"aaru", te:"ఆరు", en:"six"},
+     {rm:"eedu", te:"ఏడు", en:"seven"},
+     {rm:"enimidi", te:"ఎనిమిది", en:"eight"},
+     {rm:"tommidi", te:"తొమ్మిది", en:"nine"},
+     {rm:"padi", te:"పది", en:"ten"},
+   ]},
+ ]},
+ { id:"u10", n:10, title:"Time & Days", te:"సమయం", color:"#6A1B9A", accent:"#4a126b", lessons:[
+   { id:"u10l1", name:"When", items:[
+     {rm:"eeroju", te:"ఈరోజు", en:"today"},
+     {rm:"repu", te:"రేపు", en:"tomorrow"},
+     {rm:"ninna", te:"నిన్న", en:"yesterday"},
+     {rm:"ippudu", te:"ఇప్పుడు", en:"now"},
+     {rm:"taruvaata", te:"తరువాత", en:"later"},
+     {rm:"eppudu?", te:"ఎప్పుడు?", en:"when?"},
+   ]},
+ ]},
+ { id:"u11", n:11, title:"Getting Around", te:"దారి", color:"#00695C", accent:"#004d40", lessons:[
+   { id:"u11l1", name:"Directions", items:[
+     {rm:"ikkada", te:"ఇక్కడ", en:"here"},
+     {rm:"akkada", te:"అక్కడ", en:"there"},
+     {rm:"kudivaipu", te:"కుడివైపు", en:"to the right"},
+     {rm:"edamavaipu", te:"ఎడమవైపు", en:"to the left"},
+     {rm:"nerugaa vellandi", te:"నేరుగా వెళ్ళండి", en:"go straight"},
+     {rm:"ikkada aagandi", te:"ఇక్కడ ఆగండి", en:"stop here"},
+   ]},
+ ]},
+ { id:"u12", n:12, title:"Feelings", te:"భావాలు", color:"#AD1457", accent:"#7c0e3e", lessons:[
+   { id:"u12l1", name:"How I feel", items:[
+     {rm:"naaku santoshamgaa undi", te:"నాకు సంతోషంగా ఉంది", en:"I'm happy"},
+     {rm:"naaku baadhagaa undi", te:"నాకు బాధగా ఉంది", en:"I'm sad"},
+     {rm:"naaku kopam vachindi", te:"నాకు కోపం వచ్చింది", en:"I got angry"},
+     {rm:"naaku bhayamgaa undi", te:"నాకు భయంగా ఉంది", en:"I'm scared"},
+     {rm:"naaku saradaagaa undi", te:"నాకు సరదాగా ఉంది", en:"I feel playful"},
+     {rm:"antaa manche avutundi", te:"అంతా మంచే అవుతుంది", en:"everything will be okay"},
+   ]},
+ ]},
+];
+const LESSONS = UNITS.flatMap(u=>u.lessons.map(l=>({...l, unit:u})));
+const ORDER = LESSONS.map(l=>l.id);
+const ALL = LESSONS.flatMap(l=>l.items);
+const norm=s=>String(s).toLowerCase().replace(/[\s.,?!"'’]/g,"");
+const WORDS=[...new Set(ALL.flatMap(it=>it.rm.split(/\s+/).map(w=>w.replace(/[?.,!]/g,""))))].filter(w=>w.length>1);
+const wc=it=>it.rm.split(/\s+/).length;
+
+/* ---------- 2. STORAGE (safe localStorage + memory fallback) ---------- */
+const mem = {};
+function lsGet(k){ try{ const v=localStorage.getItem(k); return v==null?mem[k]:v; }catch(e){ return mem[k]; } }
+function lsSet(k,v){ mem[k]=v; try{ localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ delete mem[k]; try{ localStorage.removeItem(k); }catch(e){} }
+const jget=(k,d)=>{ try{ return JSON.parse(lsGet(k)||"null") ?? d; }catch(e){ return d; } };
+
+/* ---------- 3. AUDIO OUT (TTS) ---------- */
+let teVoice=null;
+function pickVoice(){ const vs=window.speechSynthesis?speechSynthesis.getVoices():[];
+  teVoice = vs.find(v=>/te[-_]IN/i.test(v.lang)) || vs.find(v=>/telugu/i.test(v.name)) || null; }
+if(window.speechSynthesis){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function speak(te,rate){ if(!window.speechSynthesis||!te) return;
+  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(te);
+    u.lang="te-IN"; u.rate=rate||.82; if(teVoice)u.voice=teVoice; speechSynthesis.speak(u);}catch(e){} }
+
+/* ---------- 3b. SOUND EFFECTS + HAPTICS ---------- */
+let actx=null;
+function tone(freq,dur,t0,type,gain){ if(!actx)return; const o=actx.createOscillator(),g=actx.createGain();
+  o.type=type||"sine"; o.frequency.value=freq; o.connect(g); g.connect(actx.destination);
+  const t=actx.currentTime+t0; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(gain||.18,t+.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o.stop(t+dur+.02); }
+function sfx(kind){
+  if(!S.sound) return;
+  try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended")actx.resume(); }catch(e){ return; }
+  if(kind==="right"){ tone(660,.12,0,"triangle"); tone(990,.16,.09,"triangle"); }
+  else if(kind==="wrong"){ tone(200,.2,0,"sawtooth",.14); tone(150,.22,.08,"sawtooth",.12); }
+  else if(kind==="tap"){ tone(520,.05,0,"sine",.08); }
+  else if(kind==="win"){ [523,659,784,1047].forEach((f,i)=>tone(f,.18,i*.1,"triangle",.16)); }
+  else if(kind==="ach"){ [784,988,1319].forEach((f,i)=>tone(f,.2,i*.09,"sine",.16)); }
+}
+function buzz(ms){ if(S.sound&&navigator.vibrate){ try{ navigator.vibrate(ms); }catch(e){} } }
+
+/* ---------- 4. STATE ---------- */
+let S = { tab:"learn", screen:"home",
+  xp:+(lsGet("xp")||0), streak:+(lsGet("streak")||0), last:lsGet("last")||null,
+  crowns:jget("crowns",{}),
+  srs:jget("srs",{}),
+  ach:jget("ach",{}),
+  goal:+(lsGet("goal")||30),
+  dayXp:+(lsGet("dayXp")||0), dayDate:lsGet("dayDate")||null,
+  seen:jget("seen",{}),
+  showScript: lsGet("showScript")==="1",
+  sound: lsGet("sound")!=="0",
+  lesson:null, search:"",
+  chat:{scenario:"gf", msgs:[], busy:false} };
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+(function rollDay(){ const t=todayStr(); if(S.dayDate!==t){ S.dayDate=t; S.dayXp=0; lsSet("dayDate",t); lsSet("dayXp",0); } })();
+
+function saveProgress(){ lsSet("xp",S.xp); lsSet("streak",S.streak); lsSet("last",S.last||"");
+  lsSet("crowns",JSON.stringify(S.crowns)); lsSet("srs",JSON.stringify(S.srs)); lsSet("ach",JSON.stringify(S.ach));
+  lsSet("seen",JSON.stringify(S.seen)); lsSet("dayXp",S.dayXp); lsSet("dayDate",S.dayDate); lsSet("goal",S.goal); }
+function resetProgress(){ S.xp=0;S.streak=0;S.last=null;S.crowns={};S.srs={};S.ach={};S.seen={};S.dayXp=0;
+  ["xp","streak","last","crowns","srs","ach","seen","dayXp"].forEach(lsDel); render(); }
+function addXp(n){ S.xp+=n; S.dayXp+=n; }
+
+/* ---------- 4b. SPACED REPETITION ---------- */
+const SRS_DAYS=[0,1,3,7,16,45];
+function srsUpdate(rm,ok){
+  S.seen[rm]=true;
+  const cur=S.srs[rm]||{s:0,due:0};
+  const s=ok?Math.min(5,cur.s+1):Math.max(0,cur.s-1);
+  S.srs[rm]={s, due:Date.now()+SRS_DAYS[s]*864e5};
+}
+function dueItems(){
+  const now=Date.now(), un=unlocked();
+  const pool=LESSONS.filter((l,i)=>i<=un).flatMap(l=>l.items);
+  return pool.filter(it=>{ const r=S.srs[it.rm]; return r && r.due<=now; })
+             .sort((a,b)=>(S.srs[a.rm].due)-(S.srs[b.rm].due));
+}
+
+/* ---------- 5. LESSON ENGINE ---------- */
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const others=(it,n,pool)=>shuffle((pool||ALL).filter(x=>x.rm!==it.rm)).slice(0,n);
+const recog = window.SpeechRecognition||window.webkitSpeechRecognition||null;
+
+function buildQueue(items, opts){
+  opts=opts||{}; const its=items, q=[];
+  if(its.length>=3){ // recognition warm-up
+    const four=shuffle(its).slice(0,Math.min(4,its.length));
+    q.push({type:"match", items:four});
+  }
+  const mids=[];
+  its.forEach((it,i)=>{
+    if(wc(it)>=2){
+      mids.push(i%2===0 ? {type:"build", it, answer:it.rm.split(/\s+/)} : {type:"hearbuild", it, answer:it.rm.split(/\s+/)});
+    } else {
+      mids.push(i%2===0 ? {type:"listen", it, options:shuffle([it.en,...others(it,3).map(x=>x.en)])}
+                        : {type:"recall", it, options:shuffle([it,...others(it,3)])});
+    }
+    if(i%3===1) mids.push({type:"listen", it, options:shuffle([it.en,...others(it,3).map(x=>x.en)])});
+  });
+  shuffle(mids).forEach(m=>q.push(m));
+  const sayables=its.filter(x=>wc(x)>=2);
+  (sayables.length?sayables:its).slice(0,opts.speakCount||3).forEach(it=>q.push({type:"speak", it}));
+  return q;
+}
+function startLesson(id){
+  const lesson=LESSONS.find(l=>l.id===id);
+  const queue=buildQueue(lesson.items);
+  S.lesson={lesson, queue, total:queue.length, done:0, miss:0, hearts:5, sel:null, checked:false, correct:false,
+    combo:0, bestCombo:0, level:(S.crowns[id]||0), review:false};
+  S.screen="lesson"; render();
+}
+function startReview(){
+  const items=dueItems().slice(0,8); if(!items.length) return;
+  const queue=buildQueue(items,{speakCount:2});
+  S.lesson={lesson:{id:"__review", name:"Practice", unit:{title:"Review",color:"#D6890A",accent:"#a36800"}},
+    queue, total:queue.length, done:0, miss:0, hearts:5, sel:null, checked:false, correct:false,
+    combo:0, bestCombo:0, level:0, review:true};
+  S.screen="lesson"; render();
+}
+function grade(ok,it){
+  const L=S.lesson; L.checked=true; L.correct=ok;
+  if(ok){ L.done++; L.combo++; L.bestCombo=Math.max(L.bestCombo,L.combo); sfx("right"); buzz(20); }
+  else { L.hearts--; L.miss++; L.combo=0; sfx("wrong"); buzz([40,40,40]); }
+  if(it) srsUpdate(it.rm, ok);
+  render();
+}
+function nextQ(){ const L=S.lesson;
+  if(L.hearts<=0){ S.screen="fail"; render(); return; }
+  if(L.correct) L.queue.shift(); else { const f=L.queue.shift(); L.queue.push(resetExercise(f)); }
+  L.checked=false; L.sel=null;
+  if(L.queue.length===0){ completeLesson(); return; }
+  render();
+}
+function resetExercise(q){ delete q.tiles; delete q.built; delete q.mstate; delete q.heard; delete q.speakDone; return q; }
+function completeLesson(){
+  const L=S.lesson;
+  if(L.review){
+    const earned=10; L.earned=earned; addXp(earned); bumpStreak(); checkAch(); saveProgress();
+    sfx("win"); buzz([30,60,30]); S.screen="complete"; render(); return;
+  }
+  const id=L.lesson.id, first=!S.crowns[id];
+  const prevCrown=S.crowns[id]||0;
+  S.crowns[id]=Math.min(5,prevCrown+1);
+  L.crownNow=S.crowns[id]; L.crownPrev=prevCrown;
+  L.earned = first?15:(prevCrown<5?10:5);
+  addXp(L.earned); bumpStreak(); checkAch(); saveProgress();
+  sfx("win"); buzz([30,60,30]); S.screen="complete"; render();
+}
+function bumpStreak(){ const t=todayStr();
+  if(S.last!==t){ const y=new Date(Date.now()-864e5).toISOString().slice(0,10);
+    S.streak=(S.last===y)?S.streak+1:1; S.last=t; } }
+const PRAISE=["Baagundi! (nice)","Adhurs! (awesome)","Super!","Correct!","Keka! (great)","Sehbaash! (well done)"];
+
+/* ---------- 5b. SPEECH RECOGNITION (speaking practice) ---------- */
+function lev(a,b){ a=[...a]; b=[...b]; const m=a.length,n=b.length;
+  const d=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)d[i][0]=i; for(let j=0;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[m][n]; }
+function similarity(a,b){ a=norm(a); b=norm(b); if(!a||!b)return 0; return 1 - lev(a,b)/Math.max(a.length,b.length); }
+let rec=null;
+function listenOnce(targetTe, onDone){
+  if(!recog){ onDone({unsupported:true}); return; }
+  try{ if(rec) rec.abort(); }catch(e){}
+  rec=new recog(); rec.lang="te-IN"; rec.interimResults=false; rec.maxAlternatives=3;
+  let got=false;
+  rec.onresult=e=>{ got=true; let best=0,heard="";
+    for(const r of e.results) for(const alt of r){ const s=similarity(alt.transcript,targetTe);
+      if(s>best){ best=s; heard=alt.transcript; } }
+    onDone({heard, score:best}); };
+  rec.onerror=e=>{ if(!got) onDone({error:e.error||"error"}); };
+  rec.onend=()=>{ if(!got) onDone({error:"nospeech"}); };
+  try{ rec.start(); }catch(e){ onDone({error:"start"}); }
+}
+
+/* ---------- 6. CONVERSATION PARTNER (your Groq key) ---------- */
+const SCENARIOS={
+  gf:{label:"Chat with her",sys:"You are role-playing as the learner's warm, playful Telugu girlfriend having a casual chat. Use casual 'nuvvu' speech."},
+  parents:{label:"Meet the parents",sys:"You are role-playing as the respectful Telugu parent of the learner's girlfriend, meeting him for the first time. Use polite 'meeru' speech and be warm but a little formal."},
+  errand:{label:"Daily errand",sys:"You are role-playing a friendly Telugu shopkeeper / auto driver in an everyday daily-life situation."}
+};
+function chatSystem(){ const sc=SCENARIOS[S.chat.scenario];
+  return `${sc.sys} The learner is a beginner learning SPOKEN Telugu and CANNOT read Telugu script. Always reply ONLY in romanized Telugu (Latin letters), then put the English meaning in parentheses. Keep every reply to 1-2 short, simple sentences. If the learner makes a mistake, gently model the correct phrase. Never use Telugu script. Stay fully in character.`; }
+async function sendChat(text){
+  const key=lsGet("groqKey");
+  if(!key){ S.tab="me"; S.screen="home"; render(); return; }
+  S.chat.msgs.push({role:"user",content:text}); S.chat.busy=true; render();
+  try{
+    const r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+      method:"POST", headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+      body:JSON.stringify({ model:"llama-3.3-70b-versatile", temperature:0.7, max_tokens:200,
+        messages:[{role:"system",content:chatSystem()}, ...S.chat.msgs.map(m=>({role:m.role,content:m.content}))] })
+    });
+    if(!r.ok){ const t=await r.text(); throw new Error(r.status+" "+t.slice(0,120)); }
+    const d=await r.json();
+    S.chat.msgs.push({role:"assistant",content:(d.choices?.[0]?.message?.content||"...").trim()});
+  }catch(e){
+    S.chat.msgs.push({role:"system",content:"Couldn't reach Groq ("+e.message+"). Check your key in Settings, or your network/CORS if self-hosting."});
+  }
+  S.chat.busy=false; render();
+}
+
+/* ---------- 6b. ACHIEVEMENTS ---------- */
+const ACH=[
+  {id:"first", ic:"🌱", t:"First steps", test:s=>Object.keys(s.crowns).length>=1},
+  {id:"streak3", ic:"🔥", t:"3-day streak", test:s=>s.streak>=3},
+  {id:"streak7", ic:"⚡", t:"7-day streak", test:s=>s.streak>=7},
+  {id:"words25", ic:"📚", t:"25 phrases", test:s=>Object.keys(s.seen).length>=25},
+  {id:"words60", ic:"🧠", t:"60 phrases", test:s=>Object.keys(s.seen).length>=60},
+  {id:"xp200", ic:"⭐", t:"200 XP", test:s=>s.xp>=200},
+  {id:"xp600", ic:"🏆", t:"600 XP", test:s=>s.xp>=600},
+  {id:"speaker", ic:"🎤", t:"Spoke aloud", test:s=>s.ach.speaker},
+  {id:"unit", ic:"🎯", t:"Unit cleared", test:s=>UNITS.some(u=>u.lessons.every(l=>s.crowns[l.id]))},
+  {id:"crown10", ic:"👑", t:"10 crowns", test:s=>Object.values(s.crowns).reduce((a,b)=>a+b,0)>=10},
+  {id:"goal", ic:"🎁", t:"Daily goal", test:s=>s.dayXp>=s.goal},
+  {id:"perfect", ic:"💎", t:"Perfect lesson", test:s=>s.ach.perfect},
+];
+function checkAch(){
+  const L=S.lesson;
+  if(L){ if(L.miss===0 && !L.review) S.ach.perfect=true; }
+  ACH.forEach(a=>{ if(!S.ach[a.id] && a.test(S)){ S.ach[a.id]=true; toast(a.ic,"Achievement!",a.t); sfx("ach"); } });
+}
+function setSpoke(){ S.ach.speaker=true; }
+
+/* ---------- 7. RENDER ---------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function unlocked(){ let i=0; for(const id of ORDER){ if(S.crowns[id]) i++; else break; } return Math.min(i,ORDER.length-1); }
+
+function toast(ic,title,sub){
+  const el=document.createElement("div"); el.className="toastcard";
+  el.innerHTML=`<div class="te">${ic}</div><div class="tt"><b>${esc(title)}</b><span>${esc(sub)}</span></div>`;
+  $("toast").appendChild(el); setTimeout(()=>{ el.style.transition="opacity .4s,transform .4s"; el.style.opacity=0;
+    el.style.transform="translateY(-12px)"; setTimeout(()=>el.remove(),420); }, 2600);
+}
+
+function renderBar(){
+  if(S.screen==="lesson"){ const L=S.lesson,p=Math.round(L.done/L.total*100);
+    $("bar").innerHTML=`<div class="lesson-top">
+      <button class="close" data-act="quit" aria-label="Quit">✕</button>
+      <div class="pbar"><i style="width:${p}%"></i></div>
+      <div class="lhearts">♥ ${L.hearts}</div></div>
+      ${L.combo>=2?`<div class="combo">${L.combo} 🔥 combo</div>`:""}`; return; }
+  $("bar").innerHTML=`<div class="topbar">
+    <div class="brandmark"><b>చె</b> Cheppu</div>
+    <div class="stat fire"><span class="ic">🔥</span>${S.streak}</div>
+    <div class="stat xp"><span class="ic">⭐</span>${S.xp}</div></div>`;
+}
+function renderNav(){
+  if(["lesson","complete","fail"].includes(S.screen)){ $("nav").innerHTML=""; return; }
+  const t=S.tab;
+  $("nav").innerHTML=`
+    <button class="${t==='learn'?'on':''}" data-tab="learn"><span class="ic">🏠</span>Learn</button>
+    <button class="${t==='book'?'on':''}" data-tab="book"><span class="ic">📖</span>Phrases</button>
+    <button class="${t==='chat'?'on':''}" data-tab="chat"><span class="ic">💬</span>Practice</button>
+    <button class="${t==='me'?'on':''}" data-tab="me"><span class="ic">⚙️</span>You</button>`;
+}
+function scriptLine(it){ return S.showScript?`<div class="tel">${it.te}</div>`:""; }
+function ringSVG(pct){ const r=22,c=2*Math.PI*r,off=c*(1-Math.min(1,pct));
+  return `<svg class="ring" viewBox="0 0 54 54"><circle cx="27" cy="27" r="${r}" fill="none" stroke="#EBE2D2" stroke-width="6"/>
+    <circle cx="27" cy="27" r="${r}" fill="none" stroke="#F4A81D" stroke-width="6" stroke-linecap="round"
+      stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 27 27)"/>
+    <text x="27" y="32" text-anchor="middle" font-size="15" font-weight="800" fill="#D6890A" font-family="Baloo 2">${Math.round(pct*100)}%</text></svg>`; }
+
+function renderHome(){
+  const un=unlocked();
+  const due=dueItems().length;
+  const goalPct=S.goal>0?S.dayXp/S.goal:1;
+  let h=`<div class="hero"><div class="big">చెప్పు</div>
+    <h1>Let's speak Telugu</h1><p>Hear it, build it, say it out loud.</p></div>`;
+  h+=`<div class="dailywrap"><div class="goalcard">${ringSVG(goalPct)}
+    <div><div class="gt">Daily goal</div><div class="gs">${S.dayXp} / ${S.goal} XP today</div></div></div></div>`;
+  const reviewReady = un>0 || Object.keys(S.crowns).length>0;
+  h+=`<button class="reviewcard ${reviewReady&&due?'':'locked'}" data-act="review" ${reviewReady&&due?'':'disabled'}>
+    <div class="ri">🔁</div><div><div class="rt">Practice weak words</div>
+    <div class="rs">${reviewReady?(due?due+" phrase"+(due>1?"s":"")+" due for review":"All caught up — come back later"):"Finish a lesson to unlock"}</div></div>
+    ${reviewReady&&due?`<div class="rb">GO</div>`:""}</button>`;
+  let g=0;
+  UNITS.forEach(u=>{
+    h+=`<div class="unit"><div class="unit-head" style="background:linear-gradient(135deg,${u.color},${u.accent})">
+      <div><div class="n">Unit ${u.n}</div><h2>${u.title}</h2></div><div class="tel">${u.te}</div></div><div class="path">`;
+    u.lessons.forEach(l=>{
+      const pos=["","l1","r1","l2","r2"][g%5], idx=ORDER.indexOf(l.id);
+      const locked=idx>un, cr=S.crowns[l.id]||0, done=cr>0, cur=idx===un&&!done;
+      const face=done?"★":(locked?"🔒":"☆");
+      h+=`<div class="node-row ${pos}"><button class="node ${locked?'locked':''} ${done?'done':''} ${cur?'cur':''}"
+        ${locked?'disabled':''} data-lesson="${l.id}"
+        style="${locked?'':`background:linear-gradient(135deg,${u.color},${u.accent})`}">${face}
+        <span class="lbl">${l.name}</span>${done?`<span class="crowns">${"👑".repeat(cr)}</span>`:""}</button></div>`; g++;
+    });
+    h+=`</div></div>`;
+  });
+  $("app").innerHTML=h;
+}
+
+function renderLesson(){
+  const L=S.lesson,q=L.queue[0]; let body="",footer="";
+
+  if(q.type==="listen"){
+    body=`<div class="q"><p class="prompt">Tap play, then choose the meaning</p>
+      <div style="text-align:center"><button class="speaker big" data-say="${esc(q.it.te)}">🔊</button>
+      <div style="margin-top:10px"><button class="speaker slow" data-slow="${esc(q.it.te)}">🐢 slow</button></div></div>
+      <div class="options">${q.options.map(o=>`<button class="opt" data-pick="${esc(o)}" data-ans="${esc(q.it.en)}">${esc(o)}</button>`).join("")}</div></div>`;
+    setTimeout(()=>speak(q.it.te),250);
+
+  } else if(q.type==="recall"){
+    body=`<div class="q"><p class="prompt">How do you say: <em>${esc(q.it.en)}</em></p>
+      <div class="options">${q.options.map(o=>`<button class="opt" data-pick="${esc(o.rm)}" data-ans="${esc(q.it.rm)}" data-say="${esc(o.te)}">
+        ${esc(o.rm)}${S.showScript?`<span class="sub" style="font-family:var(--tel)">${o.te}</span>`:""}</button>`).join("")}</div></div>`;
+
+  } else if(q.type==="build" || q.type==="hearbuild"){
+    if(!q.tiles){ const distractors=shuffle(WORDS.filter(w=>!q.answer.map(norm).includes(norm(w)))).slice(0, q.answer.length<=2?3:2);
+      q.tiles=shuffle([...q.answer,...distractors]).map((w,i)=>({w,id:i})); q.built=[]; }
+    const isHear=q.type==="hearbuild";
+    const prompt=isHear?`Tap what you hear`:`Build: <em>${esc(q.it.en)}</em>`;
+    const playhead=isHear?`<div style="text-align:center;margin:4px 0 14px"><button class="speaker big" data-say="${esc(q.it.te)}">🔊</button>
+        <div style="margin-top:10px"><button class="speaker slow" data-slow="${esc(q.it.te)}">🐢 slow</button></div></div>`:"";
+    const builtIds=new Set(q.built);
+    body=`<div class="q"><p class="prompt">${prompt}</p>${playhead}
+      <div class="answerbox ${q.built.length?'':'empty'}">${q.built.map(id=>{const t=q.tiles.find(x=>x.id===id);
+        return `<button class="tile placed ${L.checked?'lock':''}" data-built="${id}">${esc(t.w)}</button>`;}).join("")}</div>
+      <div class="bank">${q.tiles.map(t=>`<button class="tile ${builtIds.has(t.id)?'used':''} ${L.checked?'lock':''}" data-tile="${t.id}">${esc(t.w)}</button>`).join("")}</div></div>`;
+    if(isHear) setTimeout(()=>speak(q.it.te),250);
+
+  } else if(q.type==="match"){
+    if(!q.mstate){ q.mstate={ left:shuffle(q.items.map((it,i)=>({i,it}))), right:shuffle(q.items.map((it,i)=>({i,it}))),
+      sel:null, matched:new Set(), wrong:null, done:false }; }
+    const m=q.mstate;
+    body=`<div class="q"><p class="prompt">Match the pairs</p>
+      <div class="matchgrid">
+        ${m.left.map(c=>`<button class="mcell ${m.matched.has(c.i)?'gone':''} ${m.sel==='L'+c.i?'sel':''} ${m.wrong==='L'+c.i?'bad':''}"
+            data-mcell="L${c.i}" data-say="${esc(c.it.te)}">${esc(c.it.rm)}</button>`).join("")}
+        ${m.right.map(c=>`<button class="mcell tel ${m.matched.has(c.i)?'gone':''} ${m.sel==='R'+c.i?'sel':''} ${m.wrong==='R'+c.i?'bad':''}"
+            data-mcell="R${c.i}">${esc(c.it.en)}</button>`).join("")}
+      </div></div>`;
+
+  } else if(q.type==="speak"){
+    const heard=q.heard;
+    const micUI = recog ? `<button class="mic ${q._live?'live':''}" data-act="mic" data-target="${esc(q.it.te)}">🎤</button>
+        <p class="speak-help">${q._live?"Listening… say it now":"Tap the mic and say it out loud"}</p>
+        <div class="heard">${heard?heard:""}</div>`
+      : `<button class="speaker big" data-say="${esc(q.it.te)}">🔊</button>
+         <p class="speak-help">Listen, then say it aloud a couple of times.</p>`;
+    body=`<div class="q"><p class="prompt">Say it out loud 🗣️</p>
+      <div class="wordcard"><div class="roman">${esc(q.it.rm)}</div>${scriptLine(q.it)}
+        <div class="en">"${esc(q.it.en)}"</div>
+        <button class="speaker tr" data-say="${esc(q.it.te)}">🔊</button></div>
+      <div style="text-align:center;margin-top:18px">${micUI}</div>
+      ${!L.checked?`<div class="skiprow"><button data-act="saidspeak">Skip — I said it ✓</button></div>`:""}</div>`;
+    if(!q._autoplayed){ q._autoplayed=true; setTimeout(()=>speak(q.it.te),250); }
+  }
+
+  // footer
+  if(q.type==="match"){
+    const m=q.mstate;
+    footer = m.done
+      ? `<div class="feedback ok"><div class="fmsg">✓ All matched!</div><button class="btn" data-act="next">Continue</button></div>`
+      : `<div class="feedback footer-pad"><button class="btn ghost" disabled>Match all pairs to continue</button></div>`;
+  } else if(q.type==="speak"){
+    if(L.checked){
+      const ok=L.correct;
+      footer=`<div class="feedback ${ok?'ok':'no'}"><div class="fmsg">${ok?"✓ "+(q.score!=null?"Nice — "+Math.round(q.score*100)+"% match":PRAISE[0]):"Keep practicing"}
+        ${ok?"":`<span class="ans">Target: ${esc(q.it.rm)}</span>`}</div>
+        <button class="btn ${ok?'':'red'}" data-act="next">Continue</button></div>`;
+    } else footer=`<div class="feedback footer-pad"><button class="btn ghost" disabled>Say it, or skip</button></div>`;
+  } else if(!L.checked){
+    const isBuild=q.type==="build"||q.type==="hearbuild";
+    const ready=isBuild ? (q.built&&q.built.length===q.answer.length) : false;
+    footer=`<div class="feedback footer-pad"><button class="btn" id="checkbtn" data-act="check" ${ready?'':'disabled'}>Check</button></div>`;
+  } else {
+    const ok=L.correct;
+    let ans;
+    if(q.type==="listen") ans=q.it.en; else ans=q.it.rm;
+    footer=`<div class="feedback ${ok?'ok':'no'}"><div class="fmsg">${ok?"✓ "+PRAISE[Math.random()*PRAISE.length|0]:"✗ Not quite"}
+      ${ok?"":`<span class="ans">Answer: ${esc(q.it.rm)} — ${esc(q.it.en)}</span>`}</div>
+      <button class="btn ${ok?'':'red'}" data-act="next">Continue</button></div>`;
+  }
+  $("app").innerHTML=body+footer;
+}
+
+function renderComplete(){
+  const L=S.lesson, total=L.total, acc=Math.round(L.done/(L.done+L.miss||1)*100);
+  const crowns = L.review?null:`<div class="pill crown"><div class="k">${"👑".repeat(L.crownNow)||"—"}</div><div class="v">Level ${L.crownNow}</div></div>`;
+  const crownStrip = L.review?"":`<div class="crownrow">${[1,2,3,4,5].map(i=>`<span class="${i<=L.crownNow?'on':''}">👑</span>`).join("")}</div>`;
+  $("app").innerHTML=`<div class="center-screen"><div class="emoji">${L.review?"🔁":"🎉"}</div>
+    <h2>${L.review?"Review done!":"Lesson done!"}</h2><p>${esc(L.lesson.unit.title)} · ${esc(L.lesson.name)}</p>
+    ${crownStrip}
+    <div class="pills">
+      <div class="pill xp"><div class="k">+${L.earned}</div><div class="v">XP</div></div>
+      <div class="pill acc"><div class="k">${isFinite(acc)?acc:100}%</div><div class="v">Accuracy</div></div>
+      ${crowns||""}
+      <div class="pill"><div class="k">🔥${S.streak}</div><div class="v">Streak</div></div></div>
+    ${L.bestCombo>=3?`<p style="color:var(--marigold-deep);font-weight:800;margin-top:-10px">Best combo: ${L.bestCombo} 🔥</p>`:""}
+    <button class="btn" data-act="home">Continue</button></div>`;
+}
+function renderFail(){
+  $("app").innerHTML=`<div class="center-screen"><div class="emoji">💔</div>
+    <h2>Out of hearts</h2><p>No stress — repetition is how it sticks.</p>
+    <button class="btn marigold" data-act="retry">Try again</button><div style="height:12px"></div>
+    <button class="btn ghost" data-act="home">Back home</button></div>`;
+}
+
+function renderBook(){
+  const qy=norm(S.search);
+  let h=`<div class="ph-head">Phrasebook</div><p class="ph-sub">Every phrase with audio. Tap 🔊 to hear it.</p>
+    <div class="searchbar"><span>🔍</span><input id="search" placeholder="Search phrases or meaning…" value="${esc(S.search)}"/></div>`;
+  let any=false;
+  UNITS.forEach(u=>{
+    const items=u.lessons.flatMap(l=>l.items).filter(it=>!qy||norm(it.rm).includes(qy)||norm(it.en).includes(qy)||it.te.includes(S.search));
+    if(!items.length) return; any=true;
+    h+=`<div class="ph-unit" style="color:${u.accent}">${u.title}</div>`;
+    items.forEach(it=>{ const st=(S.srs[it.rm]||{}).s||0;
+      h+=`<div class="ph-item"><button class="play" data-say="${esc(it.te)}">🔊</button>
+        <div class="txt"><div class="rm">${esc(it.rm)}</div>${S.showScript?`<div class="tel">${it.te}</div>`:""}
+          <div>${[1,2,3,4,5].map(i=>`<span class="strength ${i<=st?'on':''}"></span>`).join("")}</div></div>
+        <div class="en">${esc(it.en)}</div></div>`; });
+  });
+  if(!any) h+=`<p class="ph-sub" style="text-align:center;margin-top:30px">No matches for "${esc(S.search)}"</p>`;
+  $("app").innerHTML=h;
+  const si=$("search"); if(si){ si.oninput=e=>{ S.search=e.target.value; renderBook(); const n=$("search");
+    if(n){ n.focus(); n.setSelectionRange(n.value.length,n.value.length); } }; }
+}
+
+function renderChat(){
+  const hasKey=!!lsGet("groqKey");
+  let msgs = S.chat.msgs.map(m=>{
+    if(m.role==="system") return `<div class="bubble sys">${esc(m.content)}</div>`;
+    if(m.role==="user") return `<div class="bubble me">${esc(m.content)}</div>`;
+    return `<div class="bubble them">${esc(m.content)}<button class="play" data-say="${esc(m.content.replace(/\(.*?\)/g,''))}">🔊</button></div>`;
+  }).join("");
+  if(!S.chat.msgs.length) msgs=`<div class="bubble sys">${hasKey?"Say hi to start — type or use 🎤, in English or romanized Telugu.":"Add your free Groq key in the You tab to start practicing real conversations."}</div>`;
+  if(S.chat.busy) msgs+=`<div class="bubble them">…</div>`;
+  const sc=Object.entries(SCENARIOS).map(([k,v])=>`<button class="${S.chat.scenario===k?'on':''}" data-scen="${k}">${v.label}</button>`).join("");
+  $("app").innerHTML=`<div class="chat-wrap">
+    <div class="scenario">${sc}</div>
+    <div class="msgs" id="msgs">${msgs}</div>
+    <div class="composer">
+      <input id="chatin" placeholder="${hasKey?'Type your reply…':'Add Groq key first →'}" ${hasKey?'':'disabled'} />
+      ${recog&&hasKey?`<button class="micbtn ${S.chat.live?'live':''}" data-act="chatmic">🎤</button>`:""}
+      <button class="send" data-act="send" ${hasKey?'':'disabled'}>➤</button></div></div>`;
+  const m=$("msgs"); if(m) m.scrollTop=m.scrollHeight;
+}
+
+function renderMe(){
+  const total=ORDER.length, done=Object.keys(S.crowns).length, key=lsGet("groqKey")||"", seen=Object.keys(S.seen).length;
+  $("app").innerHTML=`<div class="ph-head">You</div>
+    <div class="prof-card">
+      <div class="prof-row"><span>🔥 Day streak</span><span class="v">${S.streak}</span></div>
+      <div class="prof-row"><span>⭐ Total XP</span><span class="v">${S.xp}</span></div>
+      <div class="prof-row"><span>✓ Lessons started</span><span class="v">${done} / ${total}</span></div>
+      <div class="prof-row"><span>📚 Phrases practiced</span><span class="v">${seen}</span></div>
+    </div>
+
+    <div class="ph-unit" style="margin-top:22px">Achievements</div>
+    <div class="achgrid">${ACH.map(a=>`<div class="ach ${S.ach[a.id]?'on':''}"><div class="ai">${a.ic}</div><div class="at">${a.t}</div></div>`).join("")}</div>
+
+    <div class="prof-card">
+      <div class="prof-row"><span>🎯 Daily goal</span>
+        <span class="stepper"><button data-act="goaldown">−</button><span class="v">${S.goal} XP</span><button data-act="goalup">+</button></span></div>
+      <div class="prof-row"><span>🔊 Sound &amp; haptics</span>
+        <button class="toggle ${S.sound?'on':''}" data-act="togglesound" aria-label="Toggle sound"><i></i></button></div>
+      <div class="prof-row"><span>Show Telugu script<br><span style="font-weight:500;color:var(--ink-soft);font-size:12px">Optional reference — off by default</span></span>
+        <button class="toggle ${S.showScript?'on':''}" data-act="togglescript" aria-label="Toggle script"><i></i></button></div>
+    </div>
+
+    <div class="prof-card">
+      <div class="prof-row" style="border:none;padding-bottom:4px"><span>💬 Conversation partner</span></div>
+      <div style="font-size:13px;color:var(--ink-soft);font-weight:500;line-height:1.5">Paste a free Groq API key (<a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a> — no card needed) to chat in the Practice tab.</div>
+      <div class="keyfield"><input id="groqin" type="password" placeholder="gsk_..." value="${esc(key)}" />
+        <button data-act="savekey">Save</button></div>
+    </div>
+    <p class="note"><b>Audio:</b> uses your device's built-in Telugu voice. Phones usually have one; some laptops don't, so audio may be silent there.<br><br>
+    <b>Speaking practice:</b> the 🎤 uses your browser's speech recognition${recog?"":" — not available in this browser, so speaking falls back to self-check"}. It works best in Chrome on Android.<br><br>
+    <b>Speak for real:</b> these drills are your daily warm-up — using the phrases with your girlfriend and getting corrected by a native speaker is what builds true confidence.</p>
+    <a class="linkbtn" data-act="reset">Reset all progress</a>`;
+}
+
+function render(){
+  renderBar(); renderNav();
+  if(S.screen==="lesson") return renderLesson();
+  if(S.screen==="complete") return renderComplete();
+  if(S.screen==="fail") return renderFail();
+  if(S.tab==="learn") return renderHome();
+  if(S.tab==="book") return renderBook();
+  if(S.tab==="chat") return renderChat();
+  return renderMe();
+}
+
+/* ---------- 8. EVENTS ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-say],[data-slow],[data-tab],[data-lesson],[data-act],[data-pick],[data-scen],[data-tile],[data-built],[data-mcell]");
+  if(!t) return;
+  if(t.dataset.slow!=null){ speak(t.dataset.slow,.5); return; }
+  if(t.dataset.say!=null){ speak(t.dataset.say); if(t.dataset.mcell==null && !t.closest(".opt")) return; }
+  if(t.dataset.tab){ S.tab=t.dataset.tab; S.screen="home"; render(); return; }
+  if(t.dataset.scen){ S.chat.scenario=t.dataset.scen; S.chat.msgs=[]; render(); return; }
+  if(t.dataset.lesson){ startLesson(t.dataset.lesson); return; }
+
+  /* multiple choice */
+  if(t.dataset.pick!=null && S.lesson && !S.lesson.checked){
+    document.querySelectorAll(".opt").forEach(o=>o.classList.remove("sel"));
+    t.classList.add("sel"); S.lesson.sel={pick:t.dataset.pick,ans:t.dataset.ans,it:curItem()};
+    const cb=$("checkbtn"); if(cb) cb.disabled=false; sfx("tap"); return;
+  }
+  /* build: add a tile */
+  if(t.dataset.tile!=null && S.lesson && !S.lesson.checked){
+    const q=S.lesson.queue[0], id=+t.dataset.tile;
+    if(!q.built.includes(id)){ q.built.push(id); sfx("tap"); renderLesson(); } return;
+  }
+  /* build: remove a placed tile */
+  if(t.dataset.built!=null && S.lesson && !S.lesson.checked){
+    const q=S.lesson.queue[0], id=+t.dataset.built;
+    q.built=q.built.filter(x=>x!==id); renderLesson(); return;
+  }
+  /* match */
+  if(t.dataset.mcell!=null && S.lesson){
+    handleMatch(t.dataset.mcell); return;
+  }
+
+  const a=t.dataset.act;
+  if(a==="quit"){ S.screen="home"; S.tab="learn"; render(); }
+  else if(a==="review"){ startReview(); }
+  else if(a==="check"){ doCheck(); }
+  else if(a==="saidspeak"){ const q=S.lesson.queue[0]; S.lesson.correct=true; S.lesson.checked=true;
+    S.lesson.done++; srsUpdate(q.it.rm,true); render(); }
+  else if(a==="mic"){ doMic(t); }
+  else if(a==="next"){ nextQ(); }
+  else if(a==="retry"){ S.lesson.review?startReview():startLesson(S.lesson.lesson.id); }
+  else if(a==="home"){ S.screen="home"; S.tab="learn"; render(); }
+  else if(a==="togglescript"){ S.showScript=!S.showScript; lsSet("showScript",S.showScript?"1":"0"); render(); }
+  else if(a==="togglesound"){ S.sound=!S.sound; lsSet("sound",S.sound?"1":"0"); if(S.sound)sfx("tap"); render(); }
+  else if(a==="goalup"){ S.goal=Math.min(100,S.goal+10); lsSet("goal",S.goal); render(); }
+  else if(a==="goaldown"){ S.goal=Math.max(10,S.goal-10); lsSet("goal",S.goal); render(); }
+  else if(a==="savekey"){ const v=$("groqin").value.trim(); if(v)lsSet("groqKey",v); else lsDel("groqKey");
+    t.textContent="Saved ✓"; setTimeout(()=>render(),700); }
+  else if(a==="reset"){ if(confirm("Reset all XP, streak, crowns and progress?")) resetProgress(); }
+  else if(a==="send"){ doSend(); }
+  else if(a==="chatmic"){ doChatMic(); }
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.id==="chatin"){ e.preventDefault(); doSend(); } });
+
+function curItem(){ const q=S.lesson&&S.lesson.queue[0]; return q?q.it:null; }
+function doSend(){ const i=$("chatin"); if(!i)return; const v=i.value.trim(); if(!v||S.chat.busy)return; i.value=""; sendChat(v); }
+
+function doCheck(){
+  const L=S.lesson, q=L.queue[0];
+  if(q.type==="build"||q.type==="hearbuild"){
+    const builtStr=q.built.map(id=>q.tiles.find(x=>x.id===id).w).map(norm).join(" ");
+    const ans=q.answer.map(norm).join(" ");
+    const ok=builtStr===ans;
+    document.querySelectorAll(".answerbox .tile").forEach(el=>el.classList.add("lock"));
+    grade(ok,q.it); return;
+  }
+  if(!L.sel)return; const ok=L.sel.pick===L.sel.ans;
+  document.querySelectorAll(".opt").forEach(o=>{ if(o.dataset.pick===L.sel.ans)o.classList.add("right");
+    if(o.classList.contains("sel")&&!ok)o.classList.add("wrong"); o.style.pointerEvents="none"; });
+  grade(ok, q.it);
+}
+
+function handleMatch(cell){
+  const L=S.lesson, q=L.queue[0], m=q.mstate; if(m.done)return;
+  const side=cell[0], idx=+cell.slice(1);
+  if(m.matched.has(idx)) return;
+  speak(q.items[idx].te);
+  if(!m.sel){ m.sel=cell; sfx("tap"); renderLesson(); return; }
+  if(m.sel===cell){ m.sel=null; renderLesson(); return; }
+  const s1=m.sel[0], i1=+m.sel.slice(1);
+  if(s1!==side && i1===idx){ // correct pair (one left, one right, same item)
+    m.matched.add(idx); m.sel=null; sfx("right"); buzz(15);
+    srsUpdate(q.items[idx].rm,true);
+    if(m.matched.size===q.items.length){ m.done=true; L.done++; }
+    renderLesson();
+  } else {
+    m.wrong=cell; const bad=m.sel; sfx("wrong"); buzz(30);
+    srsUpdate(q.items[idx].rm,false); if(i1!==idx) srsUpdate(q.items[i1].rm,false);
+    renderLesson();
+    setTimeout(()=>{ m.wrong=null; m.sel=null; if(S.screen==="lesson"&&S.lesson&&S.lesson.queue[0]===q) renderLesson(); },550);
+  }
+}
+
+function doMic(btn){
+  const q=S.lesson.queue[0]; if(q._live)return; q._live=true; renderLesson();
+  listenOnce(q.it.te, res=>{
+    q._live=false;
+    if(res.unsupported){ q.heard="Speech input not supported — tap Skip."; renderLesson(); return; }
+    if(res.error){ q.heard = res.error==="not-allowed" ? "Mic permission needed." : "Didn't catch that — try again."; renderLesson(); return; }
+    q.heard = `You said: <b>${esc(res.heard)}</b>`;
+    const ok=res.score>=0.55; q.score=res.score;
+    setSpoke();
+    grade(ok,q.it);
+  });
+}
+
+/* chat mic: dictate Telugu into the composer (separate from lesson scoring) */
+function doChatMic(){
+  if(!recog || S.chat.live) return;
+  S.chat.live=true; renderChat();
+  let r=new recog(); r.lang="te-IN"; r.interimResults=false; r.maxAlternatives=1;
+  r.onresult=e=>{ const txt=e.results[0][0].transcript; const i=$("chatin"); if(i){ i.value=(i.value?i.value+" ":"")+txt; } };
+  r.onend=()=>{ S.chat.live=false; renderChat(); const i=$("chatin"); if(i) i.focus(); };
+  r.onerror=()=>{ S.chat.live=false; renderChat(); };
+  try{ r.start(); }catch(e){ S.chat.live=false; renderChat(); }
+}
+
+/* ---------- 9. PWA (only activates when served over http/https) ---------- */
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+}
+
+/* ---------- 10. BOOT ---------- */
+render();
+</script>
+</body>
+</html>
