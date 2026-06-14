@@ -1457,6 +1457,10 @@ document.addEventListener("click",e=>{
   else if(a==="savekey"){ const v=$("groqin").value.trim(); if(v)lsSet("groqKey",v); else lsDel("groqKey");
     t.textContent="Saved ✓"; setTimeout(()=>render(),700); }
   else if(a==="reset"){ if(confirm("Reset all XP, streak, crowns and progress?")) resetProgress(); }
+  else if(a==="copybackup"){ copyText(exportData(),okk=>{ t.textContent=okk?"Copied ✓":"Select the code above to copy"; setTimeout(()=>render(),1200); }); }
+  else if(a==="dorestore"){ const rb=$("restorebox"), v=rb?rb.value.trim():""; if(!v) return;
+    if(importData(v)){ saveProgress(); toast("✅","Restored","Your progress is back."); render(); }
+    else alert("That backup code didn't work — make sure you pasted the whole thing."); }
   else if(a==="send"){ doSend(); }
   else if(a==="chatmic"){ doChatMic(); }
 });
