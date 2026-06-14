@@ -960,6 +960,11 @@ function renderHome(){
     <div class="ri">🔊</div><div><div class="rt">Learn the sounds</div>
     <div class="rs">${soundsDone?"Pronunciation basics ✓ — tap to revisit":"New here? Start with how Telugu actually sounds"}</div></div>
     <div class="rb" style="background:#0277BD;box-shadow:0 3px 0 #015a92">GO</div></button>`;
+  const patDone=!!S.crowns["__patterns"];
+  h+=`<button class="reviewcard" data-act="patterns" style="background:linear-gradient(135deg,#fff,#EFE9FA)">
+    <div class="ri">🧩</div><div><div class="rt">Build your own sentences</div>
+    <div class="rs">${patDone?"Sentence patterns ✓ — tap to revisit":"Learn to swap words and make your own lines"}</div></div>
+    <div class="rb" style="background:#5E35B1;box-shadow:0 3px 0 #42268a">GO</div></button>`;
   const reviewReady = un>0 || Object.keys(S.crowns).length>0;
   h+=`<button class="reviewcard ${reviewReady&&due?'':'locked'}" data-act="review" ${reviewReady&&due?'':'disabled'}>
     <div class="ri">🔁</div><div><div class="rt">Practice weak words</div>
