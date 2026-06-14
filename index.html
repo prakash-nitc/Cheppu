@@ -1116,6 +1116,16 @@ function renderLesson(){
     setTimeout(()=>speak(q.it.te),250);
   }
 
+  if(q.type==="fillin"){
+    const target=esc(q.p.en.replace("___", q.ex.filEn));
+    const frameHtml=esc(q.p.frame).replace("___", '<span class="blank">?</span>');
+    body=`<div class="q"><p class="prompt">Say: <em>${target}</em></p>
+      <div class="framecard">${frameHtml}</div>
+      <p class="speak-help" style="margin-top:10px">Pick the word for the blank</p>
+      <div class="options">${q.options.map(o=>{ const fe=(q.p.ex.find(e=>e.fill===o)||{}).filEn||"";
+        return `<button class="opt" data-pick="${esc(o)}" data-ans="${esc(q.ex.fill)}">${esc(o)}<span class="sub">${esc(fe)}</span></button>`; }).join("")}</div></div>`;
+  }
+
   // footer
   if(q.type==="match"){
     const m=q.mstate;
