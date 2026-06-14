@@ -820,18 +820,20 @@ function renderLesson(){
       </div></div>`;
 
   } else if(q.type==="speak"){
-    const heard=q.heard;
-    const micUI = recog ? `<button class="mic ${q._live?'live':''}" data-act="mic" data-target="${esc(q.it.te)}">🎤</button>
-        <p class="speak-help">${q._live?"Listening… say it now":"Tap the mic and say it out loud"}</p>
-        <div class="heard">${heard?heard:""}</div>`
-      : `<button class="speaker big" data-say="${esc(q.it.te)}">🔊</button>
-         <p class="speak-help">Listen, then say it aloud a couple of times.</p>`;
+    const recBlock = mediaOK() ? `
+      <div style="text-align:center;margin-top:6px">
+        <button class="recbtn ${q._rec?'live':''}" data-act="rec">${q._rec?"⏹ Stop recording":(q.recUrl?"🔴 Record again":"🔴 Hear yourself")}</button>
+        ${q.recUrl?`<div class="playrow"><button class="cmp" data-say="${esc(q.it.te)}">▶ Native</button>
+          <button class="cmp mine" data-act="playrec">▶ Your voice</button></div>`:""}
+        ${q._recErr?`<div class="heard">${esc(q._recErr)}</div>`:""}
+      </div>` : "";
     body=`<div class="q"><p class="prompt">Say it out loud 🗣️</p>
       <div class="wordcard"><div class="roman">${esc(q.it.rm)}</div>${scriptLine(q.it)}
         <div class="en">"${esc(q.it.en)}"</div>
         <button class="speaker tr" data-say="${esc(q.it.te)}">🔊</button></div>
-      <div style="text-align:center;margin-top:18px">${micUI}</div>
-      ${!L.checked?`<div class="skiprow"><button data-act="saidspeak">Skip — I said it ✓</button></div>`:""}</div>`;
+      <div style="text-align:center;margin-top:12px"><button class="speaker slow" data-slow="${esc(q.it.te)}">🐢 slow</button></div>
+      <p class="speak-help">Listen, then say it aloud.${mediaOK()?" Tap “Hear yourself” to record &amp; compare — it stays on your device.":""}</p>
+      ${recBlock}</div>`;
     if(!q._autoplayed){ q._autoplayed=true; setTimeout(()=>speak(q.it.te),250); }
   }
 
