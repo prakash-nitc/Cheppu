@@ -1197,9 +1197,22 @@ function doChatMic(){
   try{ r.start(); }catch(e){ S.chat.live=false; renderChat(); }
 }
 
-/* ---------- 9. PWA (only activates when served over http/https) ---------- */
+/* ---------- 9. PWA + auto-update (only activates over http/https) ---------- */
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-  window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+  let refreshing=false;
+  const hadController=!!navigator.serviceWorker.controller; // false on first-ever visit
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{
+    if(!hadController||refreshing) return;     // ignore the very first install; reload only on real updates
+    refreshing=true;
+    // don't yank the page out from under an active lesson — wait until it's safe
+    if(S && S.screen==="lesson"){ const t=setInterval(()=>{ if(S.screen!=="lesson"){ clearInterval(t); location.reload(); } },1500); }
+    else location.reload();
+  });
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./service-worker.js").then(reg=>{
+      setInterval(()=>{ reg.update().catch(()=>{}); }, 36e5); // re-check for updates hourly while open
+    }).catch(()=>{});
+  });
 }
 
 /* ---------- 10. BOOT ---------- */
