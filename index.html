@@ -1541,6 +1541,7 @@ document.addEventListener("click",e=>{
   if(t.dataset.mode){ S.chat.mode=t.dataset.mode; S.chat.msgs=[]; render(); return; }
   if(t.dataset.lesson){ startLesson(t.dataset.lesson); return; }
   if(t.dataset.dlg){ startDialogue(t.dataset.dlg); return; }
+  if(t.dataset.found){ startFoundation(t.dataset.found); return; }
   if(t.dataset.dchoice!=null && S.dialogue){ pickReply(+t.dataset.dchoice); return; }
 
   /* multiple choice */
