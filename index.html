@@ -1011,6 +1011,22 @@ function renderTeach(){
     if(L._teachPlayed!==L.teachI){ L._teachPlayed=L.teachI; setTimeout(()=>speak(it.te),250); }
     return;
   }
+  if(L.patterns){
+    const ex0=it.ex[0], full=it.frame.replace("___", ex0.fill);
+    $("app").innerHTML=`<div class="q"><div class="teachcard">
+      <div class="tnum">Pattern · ${n} / ${total}</div>
+      <div class="troman" style="color:var(--indigo)">${esc(it.frame).replace("___",'<span class="blank">___</span>')}</div>
+      <div class="ten">means “${esc(it.en)}”</div>
+      <div class="teachaudio"><button class="speaker big" data-say="${esc(ex0.te)}">🔊</button>
+        <button class="speaker slow" data-slow="${esc(ex0.te)}">🐢 slow</button></div>
+      <div class="soundex">e.g. <b>${esc(full)}</b> — ${esc(it.en.replace("___",ex0.filEn))}</div>
+      <div class="tip">💡 Swap the blank for any word to make your own sentence.</div>
+    </div></div>
+    <div class="feedback"><button class="btn marigold" data-act="teachnext">${last?"Start practice →":"Got it →"}</button>
+      ${!last?`<div class="skiprow"><button data-act="teachskip">Skip intro, go to practice</button></div>`:""}</div>`;
+    if(L._teachPlayed!==L.teachI){ L._teachPlayed=L.teachI; setTimeout(()=>speak(ex0.te),250); }
+    return;
+  }
   const chunks=glossChunks(it).filter(c=>c.g);
   const tip=patternTip(it), reg=register(it);
   const regUI = reg==="casual" ? `<div class="reg casual">👧 Casual — say this to <b>her</b></div>`
