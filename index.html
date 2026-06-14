@@ -887,6 +887,11 @@ function renderHome(){
     <h1>Let's speak Telugu</h1><p>Hear it, build it, say it out loud.</p></div>`;
   h+=`<div class="dailywrap"><div class="goalcard">${ringSVG(goalPct)}
     <div><div class="gt">Daily goal</div><div class="gs">${S.dayXp} / ${S.goal} XP today</div></div></div></div>`;
+  const soundsDone=!!S.crowns["__sounds"];
+  h+=`<button class="reviewcard" data-act="sounds" style="background:linear-gradient(135deg,#fff,#E3F2FB)">
+    <div class="ri">🔊</div><div><div class="rt">Learn the sounds</div>
+    <div class="rs">${soundsDone?"Pronunciation basics ✓ — tap to revisit":"New here? Start with how Telugu actually sounds"}</div></div>
+    <div class="rb" style="background:#0277BD;box-shadow:0 3px 0 #015a92">GO</div></button>`;
   const reviewReady = un>0 || Object.keys(S.crowns).length>0;
   h+=`<button class="reviewcard ${reviewReady&&due?'':'locked'}" data-act="review" ${reviewReady&&due?'':'disabled'}>
     <div class="ri">🔁</div><div><div class="rt">Practice weak words</div>
