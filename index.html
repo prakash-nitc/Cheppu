@@ -844,12 +844,10 @@ function renderLesson(){
       ? `<div class="feedback ok"><div class="fmsg">✓ All matched!</div><button class="btn" data-act="next">Continue</button></div>`
       : `<div class="feedback footer-pad"><button class="btn ghost" disabled>Match all pairs to continue</button></div>`;
   } else if(q.type==="speak"){
-    if(L.checked){
-      const ok=L.correct;
-      footer=`<div class="feedback ${ok?'ok':'no'}"><div class="fmsg">${ok?"✓ "+(q.score!=null?"Nice — "+Math.round(q.score*100)+"% match":PRAISE[0]):"Keep practicing"}
-        ${ok?"":`<span class="ans">Target: ${esc(q.it.rm)}</span>`}</div>
-        <button class="btn ${ok?'':'red'}" data-act="next">Continue</button></div>`;
-    } else footer=`<div class="feedback footer-pad"><button class="btn ghost" disabled>Say it, or skip</button></div>`;
+    footer=`<div class="feedback"><div class="fmsg" style="font-size:14px;color:var(--ink-soft);font-family:var(--body);font-weight:700;margin-bottom:10px">Say it aloud, then rate yourself honestly</div>
+      <div style="display:flex;gap:10px">
+        <button class="btn ghost" style="flex:1" data-act="speakmeh">Needs work 🔁</button>
+        <button class="btn" style="flex:1" data-act="speakgot">I nailed it ✓</button></div></div>`;
   } else if(!L.checked){
     const isBuild=q.type==="build"||q.type==="hearbuild";
     const ready=isBuild ? (q.built&&q.built.length===q.answer.length) : false;
