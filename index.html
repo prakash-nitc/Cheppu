@@ -1189,6 +1189,7 @@ document.addEventListener("click",e=>{
   const a=t.dataset.act;
   if(a==="quit"){ if(S.lesson&&S.lesson.queue[0]) cleanupRec(S.lesson.queue[0]); else { stopRec(); cleanupStream(); } S.screen="home"; S.tab="learn"; render(); }
   else if(a==="review"){ startReview(); }
+  else if(a==="sounds"){ startSounds(); }
   else if(a==="teachnext"){ const L=S.lesson; if(L.teachI<L.teachItems.length-1){ L.teachI++; } else { L.phase="drill"; } render(); }
   else if(a==="teachskip"){ S.lesson.phase="drill"; render(); }
   else if(a==="check"){ doCheck(); }
