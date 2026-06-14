@@ -598,7 +598,8 @@ function nextQ(){ const L=S.lesson;
   if(L.queue.length===0){ completeLesson(); return; }
   render();
 }
-function resetExercise(q){ delete q.tiles; delete q.built; delete q.mstate; delete q.heard; delete q.speakDone; return q; }
+function resetExercise(q){ delete q.tiles; delete q.built; delete q.mstate;
+  if(q.recUrl){ try{ URL.revokeObjectURL(q.recUrl); }catch(e){} } delete q.recUrl; delete q._rec; delete q._recErr; return q; }
 function completeLesson(){
   const L=S.lesson;
   if(L.review){
