@@ -789,11 +789,57 @@ function startPatterns(){
     phase:first?"teach":"drill", teachItems:PATTERN_LESSON.items, teachI:0};
   S.screen="lesson"; render();
 }
+/* ---------- FOUNDATIONS: a structured, level-by-level "learn the system" track ----------
+   Each level explains a building block in plain English, then drills it generatively
+   (build / substitute / recall) — understanding, not phrase-memorizing. */
+const FOUNDATIONS=[
+ { id:"__f1", n:1, title:"People & naming", unit:{title:"Foundations", color:"#00897B", accent:"#00695C"},
+   teach:[
+     {kind:"concept", title:"The people", html:"Telugu sentences are built from small blocks. Start with the people:<br><br><b>nenu</b> = I &nbsp;·&nbsp; <b>nuvvu</b> = you (a friend)<br><b>meeru</b> = you (an elder — polite)<br><b>atanu</b> = he &nbsp;·&nbsp; <b>aame</b> = she &nbsp;·&nbsp; <b>memu</b> = we"},
+     {kind:"ex", rm:"naa peru Ravi", te:"నా పేరు రవి", en:"My name is Ravi",
+       note:"naa (my) + peru (name) + Ravi. Notice there's no word for “is” — Telugu just leaves it out."},
+     {kind:"concept", title:"“my” and “your”", html:"To say <b>my / your</b>, the pronoun changes shape:<br><br><b>nenu</b> (I) → <b>naa</b> (my)<br><b>nuvvu</b> (you) → <b>nee</b> (your)<br><b>meeru</b> (you-polite) → <b>mee</b> (your-polite)"},
+     {kind:"ex", rm:"nee peru enti?", te:"నీ పేరు ఏంటి?", en:"What's your name?",
+       note:"nee (your) + peru (name) + enti (what). The question word goes at the END."},
+     {kind:"concept", title:"Word order", html:"This is the big one: Telugu puts the <b>action or question word last</b>.<br><br>English: “<b>What</b> is your name?”<br>Telugu order: “Your name — <b>what</b>?” → nee peru enti?<br><br>Get comfortable ending your sentence with the verb or question word."},
+   ],
+   drills:[
+     {type:"match", items:[
+       {rm:"nenu",te:"నేను",en:"I"},{rm:"nuvvu",te:"నువ్వు",en:"you (friend)"},
+       {rm:"naa",te:"నా",en:"my"},{rm:"nee",te:"నీ",en:"your"} ]},
+     {type:"recall", it:{rm:"meeru",te:"మీరు",en:"you (speaking to an elder)"},
+       options:[ {rm:"meeru",te:"మీరు"},{rm:"nuvvu",te:"నువ్వు"},{rm:"nenu",te:"నేను"},{rm:"aame",te:"ఆమె"} ]},
+     {type:"recall", it:{rm:"naa",te:"నా",en:"my"},
+       options:[ {rm:"naa",te:"నా"},{rm:"nee",te:"నీ"},{rm:"mee",te:"మీ"},{rm:"nenu",te:"నేను"} ]},
+     {type:"recall", it:{rm:"nee peru enti?",te:"నీ పేరు ఏంటి?",en:"What's your name?"},
+       options:[ {rm:"nee peru enti?",te:"నీ పేరు ఏంటి?"},{rm:"naa peru Ravi",te:"నా పేరు రవి"},
+                 {rm:"naaku artham kaaledu",te:"నాకు అర్థం కాలేదు"},{rm:"nuvvu ekkada untaavu?",te:"నువ్వు ఎక్కడ ఉంటావు?"} ]},
+     {type:"build", it:{rm:"naa peru Ravi",te:"నా పేరు రవి",en:"My name is Ravi"}, answer:["naa","peru","Ravi"]},
+     {type:"build", it:{rm:"nee peru enti?",te:"నీ పేరు ఏంటి?",en:"What's your name?"}, answer:["nee","peru","enti?"]},
+     {type:"fillin",
+       p:{frame:"___ peru enti?", en:"What's ___ name?",
+          ex:[ {fill:"nee",filEn:"your",te:"నీ పేరు ఏంటి?"},{fill:"mee",filEn:"your (polite)",te:"మీ పేరు ఏంటి?"},{fill:"aame",filEn:"her",te:"ఆమె పేరు ఏంటి?"} ]},
+       ex:{fill:"aame",filEn:"her",te:"ఆమె పేరు ఏంటి?"}, options:["nee","mee","aame"] },
+     {type:"fillin",
+       p:{frame:"___ peru enti?", en:"What's ___ name?",
+          ex:[ {fill:"nee",filEn:"your",te:"నీ పేరు ఏంటి?"},{fill:"mee",filEn:"your (polite)",te:"మీ పేరు ఏంటి?"},{fill:"aame",filEn:"her",te:"ఆమె పేరు ఏంటి?"} ]},
+       ex:{fill:"mee",filEn:"your (polite)",te:"మీ పేరు ఏంటి?"}, options:["nee","mee","aame"] },
+   ]},
+];
+function startFoundation(id){
+  const f=FOUNDATIONS.find(x=>x.id===id); if(!f) return;
+  const first=!S.crowns[id];
+  const queue=f.drills.map(d=>{ const c={...d}; if(c.options) c.options=shuffle(c.options); return c; });
+  S.lesson={lesson:{id:f.id, name:f.title, unit:f.unit}, queue, total:queue.length, done:0, miss:0, hearts:5,
+    sel:null, checked:false, correct:false, combo:0, bestCombo:0, level:(S.crowns[id]||0), review:false,
+    foundations:true, phase:first?"teach":"drill", teachItems:f.teach, teachI:0};
+  S.screen="lesson"; render();
+}
 function grade(ok,it){
   const L=S.lesson; L.checked=true; L.correct=ok;
   if(ok){ L.done++; L.combo++; L.bestCombo=Math.max(L.bestCombo,L.combo); sfx("right"); buzz(20); }
   else { L.hearts--; L.miss++; L.combo=0; sfx("wrong"); buzz([40,40,40]); }
-  if(it && !(L&&L.sounds)) srsUpdate(it.rm, ok);   // sounds aren't phrases — keep them out of review/SRS
+  if(it && !(L&&(L.sounds||L.patterns||L.foundations))) srsUpdate(it.rm, ok);   // standalone modules stay out of phrase review/SRS
   render();
 }
 function nextQ(){ const L=S.lesson;
