@@ -2,7 +2,7 @@
 // Strategy: network-first for the HTML page (so a new version shows up as soon as
 // you're online), stale-while-revalidate for assets (fast, and self-refreshing),
 // with a full offline fallback. Bumping CACHE forces a clean re-cache.
-const CACHE = "cheppu-v7";
+const CACHE = "cheppu-v8";
 const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./icons/favicon.svg", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png"
