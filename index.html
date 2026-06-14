@@ -310,6 +310,9 @@
   .dlg-replies{display:grid;gap:10px;padding:8px 2px calc(10px + env(safe-area-inset-bottom))}
   .convsec{margin-top:14px}
   .convhead{font-family:var(--disp);font-weight:800;font-size:14px;margin:6px 2px 8px}
+  .tierhead{font-family:var(--disp);font-weight:800;font-size:12.5px;letter-spacing:1.2px;text-transform:uppercase;margin:20px 2px 9px;display:flex;align-items:center;gap:8px}
+  .tierhead::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+  .tierhead.easy{color:var(--teal-deep)} .tierhead.medium{color:var(--marigold-deep)} .tierhead.advanced{color:var(--vermilion)}
   .convcard{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow);text-align:left}
   .convcard .cvt{font-family:var(--disp);font-weight:800;font-size:14.5px}
   .convcard .cvs{color:var(--ink-soft);font-weight:700;font-size:12px;margin-top:1px}
@@ -982,6 +985,62 @@ const FOUNDATIONS=[
           ex:[ {fill:"undaa",filEn:"is it? (asks)",te:"నీకు ఆకలిగా ఉందా?"},{fill:"undi",filEn:"it is (states)",te:"నీకు ఆకలిగా ఉంది"},{fill:"ledu",filEn:"there isn't",te:"నీకు ఆకలిగా లేదు"} ]},
        ex:{fill:"undaa",filEn:"is it? (asks)",te:"నీకు ఆకలిగా ఉందా?"}, options:["undaa","undi","ledu"] },
    ]},
+ { id:"__f4", n:4, title:"This, that & describing", unit:{title:"Foundations", color:"#00897B", accent:"#00695C"},
+   teach:[
+     {kind:"concept", title:"Pointing: this & that", html:"<b>idi</b> = this (near you)<br><b>adi</b> = that (over there)<br><br>Put a noun after it and you've made a sentence — no “is” needed:<br>idi tea = “this is tea”."},
+     {kind:"ex", rm:"adi naa illu", te:"అది నా ఇల్లు", en:"That's my house",
+       note:"adi (that) + naa (my) + illu (house). “That my house.”"},
+     {kind:"concept", title:"Describing words (adjectives)", html:"Describing words come <b>before</b> the noun:<br><br><b>pedda</b> = big &nbsp;·&nbsp; <b>chinna</b> = small<br><b>manchi</b> = good &nbsp;·&nbsp; <b>chedda</b> = bad<br><br>pedda illu = “a big house”."},
+     {kind:"ex", rm:"idi pedda illu", te:"ఇది పెద్ద ఇల్లు", en:"This is a big house",
+       note:"idi (this) + pedda (big) + illu (house). The adjective hugs the noun."},
+     {kind:"concept", title:"“It's very good”", html:"<b>baagundi</b> = “it's good / nice”. Put <b>chaalaa</b> (very) in front to turn it up:<br><br>idi chaalaa baagundi = “this is very good”."},
+     {kind:"ex", rm:"idi chaalaa baagundi", te:"ఇది చాలా బాగుంది", en:"This is very good",
+       note:"idi + chaalaa (very) + baagundi (it's good). Use it for food, places, anything."},
+     {kind:"ex", rm:"aame chaalaa manchi ammaayi", te:"ఆమె చాలా మంచి అమ్మాయి", en:"She's a very good girl",
+       note:"aame (she) + chaalaa (very) + manchi (good) + ammaayi (girl)."},
+   ],
+   drills:[
+     {type:"match", items:[
+       {rm:"idi",te:"ఇది",en:"this"},{rm:"adi",te:"అది",en:"that"},
+       {rm:"pedda",te:"పెద్ద",en:"big"},{rm:"chinna",te:"చిన్న",en:"small"} ]},
+     {type:"match", items:[
+       {rm:"manchi",te:"మంచి",en:"good"},{rm:"chedda",te:"చెడ్డ",en:"bad"},
+       {rm:"illu",te:"ఇల్లు",en:"house"},{rm:"baagundi",te:"బాగుంది",en:"it's good"} ]},
+     {type:"recall", it:{rm:"idi",te:"ఇది",en:"this"},
+       options:[ {rm:"idi",te:"ఇది"},{rm:"adi",te:"అది"},{rm:"ikkada",te:"ఇక్కడ"},{rm:"illu",te:"ఇల్లు"} ]},
+     {type:"recall", it:{rm:"adi",te:"అది",en:"that"},
+       options:[ {rm:"adi",te:"అది"},{rm:"idi",te:"ఇది"},{rm:"akkada",te:"అక్కడ"},{rm:"aame",te:"ఆమె"} ]},
+     {type:"recall", it:{rm:"pedda",te:"పెద్ద",en:"big"},
+       options:[ {rm:"pedda",te:"పెద్ద"},{rm:"chinna",te:"చిన్న"},{rm:"manchi",te:"మంచి"},{rm:"chedda",te:"చెడ్డ"} ]},
+     {type:"recall", it:{rm:"chinna",te:"చిన్న",en:"small"},
+       options:[ {rm:"chinna",te:"చిన్న"},{rm:"pedda",te:"పెద్ద"},{rm:"manchi",te:"మంచి"},{rm:"illu",te:"ఇల్లు"} ]},
+     {type:"recall", it:{rm:"manchi",te:"మంచి",en:"good"},
+       options:[ {rm:"manchi",te:"మంచి"},{rm:"chedda",te:"చెడ్డ"},{rm:"pedda",te:"పెద్ద"},{rm:"chinna",te:"చిన్న"} ]},
+     {type:"recall", it:{rm:"idi chaalaa baagundi",te:"ఇది చాలా బాగుంది",en:"This is very good"},
+       options:[ {rm:"idi chaalaa baagundi",te:"ఇది చాలా బాగుంది"},{rm:"adi naa illu",te:"అది నా ఇల్లు"},
+                 {rm:"idi pedda illu",te:"ఇది పెద్ద ఇల్లు"},{rm:"idi enti?",te:"ఇది ఏంటి?"} ]},
+     {type:"recall", it:{rm:"adi naa illu",te:"అది నా ఇల్లు",en:"That's my house"},
+       options:[ {rm:"adi naa illu",te:"అది నా ఇల్లు"},{rm:"idi naa phone",te:"ఇది నా ఫోన్"},
+                 {rm:"idi pedda illu",te:"ఇది పెద్ద ఇల్లు"},{rm:"naa peru Ravi",te:"నా పేరు రవి"} ]},
+     {type:"recall", it:{rm:"idi pedda illu",te:"ఇది పెద్ద ఇల్లు",en:"This is a big house"},
+       options:[ {rm:"idi pedda illu",te:"ఇది పెద్ద ఇల్లు"},{rm:"idi chinna illu",te:"ఇది చిన్న ఇల్లు"},
+                 {rm:"adi naa illu",te:"అది నా ఇల్లు"},{rm:"idi chaalaa baagundi",te:"ఇది చాలా బాగుంది"} ]},
+     {type:"build", it:{rm:"adi naa illu",te:"అది నా ఇల్లు",en:"That's my house"}, answer:["adi","naa","illu"]},
+     {type:"build", it:{rm:"idi pedda illu",te:"ఇది పెద్ద ఇల్లు",en:"This is a big house"}, answer:["idi","pedda","illu"]},
+     {type:"build", it:{rm:"idi chaalaa baagundi",te:"ఇది చాలా బాగుంది",en:"This is very good"}, answer:["idi","chaalaa","baagundi"]},
+     {type:"fillin",
+       p:{frame:"idi chaalaa ___", en:"This is very ___",
+          ex:[ {fill:"pedda",filEn:"big",te:"ఇది చాలా పెద్ద"},{fill:"chinna",filEn:"small",te:"ఇది చాలా చిన్న"},{fill:"manchidi",filEn:"good",te:"ఇది చాలా మంచిది"} ]},
+       ex:{fill:"pedda",filEn:"big",te:"ఇది చాలా పెద్ద"}, options:["pedda","chinna","manchidi"] },
+     {type:"fillin",
+       p:{frame:"___ naa illu", en:"___ my house",
+          ex:[ {fill:"idi",filEn:"this is",te:"ఇది నా ఇల్లు"},{fill:"adi",filEn:"that is",te:"అది నా ఇల్లు"} ]},
+       ex:{fill:"adi",filEn:"that is",te:"అది నా ఇల్లు"}, options:["idi","adi"] },
+     {type:"fillin",
+       p:{frame:"idi ___ illu", en:"This is a ___ house",
+          ex:[ {fill:"pedda",filEn:"big",te:"ఇది పెద్ద ఇల్లు"},{fill:"chinna",filEn:"small",te:"ఇది చిన్న ఇల్లు"},{fill:"manchi",filEn:"good",te:"ఇది మంచి ఇల్లు"} ]},
+       ex:{fill:"chinna",filEn:"small",te:"ఇది చిన్న ఇల్లు"}, options:["pedda","chinna","manchi"] },
+   ]},
 ];
 function startFoundation(id){
   const f=FOUNDATIONS.find(x=>x.id===id); if(!f) return;
@@ -1207,13 +1266,17 @@ function renderHub(){
   h+=card('data-page="units"','📘','#4B3D9E','Phrase units',`${ORDER.length} situational lessons`);
   $("app").innerHTML=h;
 }
+const tierOf=n=> n<=3?"Easy" : n<=6?"Medium" : "Advanced";
 function renderFoundationsPage(){
-  let h=pageHeader("📚 Foundations","Concepts first, then practice — basics to advanced");
-  h+=`<div class="convsec">${FOUNDATIONS.map(f=>{ const fdone=!!S.crowns[f.id];
-    return `<button class="convcard" data-found="${f.id}" style="border-left:5px solid ${f.unit.color}">
-      <div><div class="cvt">Level ${f.n} · ${esc(f.title)}</div>
-      <div class="cvs">${fdone?"Completed ✓ — tap to revisit":"Understand how it works, then build it yourself"}</div></div>
-      <div class="gobadge" style="background:${f.unit.color};box-shadow:0 3px 0 ${f.unit.accent}">GO</div></button>`; }).join("")}</div>`;
+  let h=pageHeader("📚 Foundations","Concepts first, then practice — easy to advanced");
+  ["Easy","Medium","Advanced"].forEach(tier=>{
+    const levels=FOUNDATIONS.filter(f=>tierOf(f.n)===tier); if(!levels.length) return;
+    h+=`<div class="tierhead ${tier.toLowerCase()}">${tier}</div><div class="convsec">${levels.map(f=>{ const fdone=!!S.crowns[f.id];
+      return `<button class="convcard" data-found="${f.id}" style="border-left:5px solid ${f.unit.color}">
+        <div><div class="cvt">Level ${f.n} · ${esc(f.title)}</div>
+        <div class="cvs">${fdone?"Completed ✓ — tap to revisit":"Understand how it works, then build it yourself"}</div></div>
+        <div class="gobadge" style="background:${f.unit.color};box-shadow:0 3px 0 ${f.unit.accent}">GO</div></button>`; }).join("")}</div>`;
+  });
   $("app").innerHTML=h;
 }
 function renderConversationsPage(){
