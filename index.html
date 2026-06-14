@@ -1003,12 +1003,13 @@ document.addEventListener("click",e=>{
   }
 
   const a=t.dataset.act;
-  if(a==="quit"){ S.screen="home"; S.tab="learn"; render(); }
+  if(a==="quit"){ if(S.lesson&&S.lesson.queue[0]) cleanupRec(S.lesson.queue[0]); else { stopRec(); cleanupStream(); } S.screen="home"; S.tab="learn"; render(); }
   else if(a==="review"){ startReview(); }
   else if(a==="check"){ doCheck(); }
-  else if(a==="saidspeak"){ const q=S.lesson.queue[0]; S.lesson.correct=true; S.lesson.checked=true;
-    S.lesson.done++; srsUpdate(q.it.rm,true); render(); }
-  else if(a==="mic"){ doMic(t); }
+  else if(a==="speakgot"){ rateSpeak(true); }
+  else if(a==="speakmeh"){ rateSpeak(false); }
+  else if(a==="rec"){ toggleRec(); }
+  else if(a==="playrec"){ playRec(); }
   else if(a==="next"){ nextQ(); }
   else if(a==="retry"){ S.lesson.review?startReview():startLesson(S.lesson.lesson.id); }
   else if(a==="home"){ S.screen="home"; S.tab="learn"; render(); }
