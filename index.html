@@ -1082,7 +1082,7 @@ function renderMe(){
 
 function render(){
   renderBar(); renderNav();
-  if(S.screen==="lesson") return renderLesson();
+  if(S.screen==="lesson") return (S.lesson.phase==="teach" ? renderTeach() : renderLesson());
   if(S.screen==="complete") return renderComplete();
   if(S.screen==="fail") return renderFail();
   if(S.tab==="learn") return renderHome();
