@@ -729,6 +729,41 @@ function startSounds(){
     phase:first?"teach":"drill", teachItems:SOUND_LESSON.items, teachI:0};
   S.screen="lesson"; render();
 }
+/* Generative practice — fill a sentence frame's blank with different words,
+   so you learn to BUILD your own lines, not just recall fixed phrases. */
+const PATTERN_LESSON={ id:"__patterns", name:"Build your own sentences", patterns:true,
+  unit:{title:"Sentence building", color:"#5E35B1", accent:"#42268a"},
+  items:[
+    { frame:"naaku ___ kaavaali", en:"I want ___",
+      ex:[ {fill:"neellu", filEn:"water", te:"నాకు నీళ్ళు కావాలి"},
+           {fill:"paalu", filEn:"milk", te:"నాకు పాలు కావాలి"},
+           {fill:"tea", filEn:"tea", te:"నాకు టీ కావాలి"},
+           {fill:"annam", filEn:"food", te:"నాకు అన్నం కావాలి"} ]},
+    { frame:"naaku ___ ishtam", en:"I like ___",
+      ex:[ {fill:"tea", filEn:"tea", te:"నాకు టీ ఇష్టం"},
+           {fill:"paalu", filEn:"milk", te:"నాకు పాలు ఇష్టం"},
+           {fill:"telugu", filEn:"Telugu", te:"నాకు తెలుగు ఇష్టం"},
+           {fill:"sinima", filEn:"movies", te:"నాకు సినిమా ఇష్టం"} ]},
+    { frame:"naaku ___ undi", en:"I feel ___",
+      ex:[ {fill:"santoshamgaa", filEn:"happy", te:"నాకు సంతోషంగా ఉంది"},
+           {fill:"aakaligaa", filEn:"hungry", te:"నాకు ఆకలిగా ఉంది"},
+           {fill:"alasatagaa", filEn:"tired", te:"నాకు అలసటగా ఉంది"},
+           {fill:"baadhagaa", filEn:"sad", te:"నాకు బాధగా ఉంది"} ]},
+  ]};
+function buildPatternQueue(items){
+  const q=[];
+  items.forEach(p=> shuffle(p.ex).forEach(ex=>{
+    q.push({type:"fillin", p, ex, options:shuffle(p.ex.map(e=>e.fill))});
+  }));
+  return q;
+}
+function startPatterns(){
+  const first=!S.crowns["__patterns"], queue=buildPatternQueue(PATTERN_LESSON.items);
+  S.lesson={lesson:PATTERN_LESSON, queue, total:queue.length, done:0, miss:0, hearts:5, sel:null, checked:false, correct:false,
+    combo:0, bestCombo:0, level:(S.crowns["__patterns"]||0), review:false, patterns:true,
+    phase:first?"teach":"drill", teachItems:PATTERN_LESSON.items, teachI:0};
+  S.screen="lesson"; render();
+}
 function grade(ok,it){
   const L=S.lesson; L.checked=true; L.correct=ok;
   if(ok){ L.done++; L.combo++; L.bestCombo=Math.max(L.bestCombo,L.combo); sfx("right"); buzz(20); }
