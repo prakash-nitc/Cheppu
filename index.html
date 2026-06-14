@@ -611,7 +611,7 @@ let S = { tab:"learn", screen:"home",
   showScript: lsGet("showScript")==="1",
   sound: lsGet("sound")!=="0",
   lesson:null, search:"",
-  chat:{scenario:"gf", msgs:[], busy:false} };
+  chat:{mode:"roleplay", scenario:"gf", tutor:"tutor", msgs:[], busy:false} };
 
 function todayStr(){ return new Date().toISOString().slice(0,10); }
 (function rollDay(){ const t=todayStr(); if(S.dayDate!==t){ S.dayDate=t; S.dayXp=0; lsSet("dayDate",t); lsSet("dayXp",0); } })();
