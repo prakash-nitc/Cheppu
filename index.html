@@ -916,9 +916,24 @@ function renderHome(){
 }
 
 function renderTeach(){
-  const L=S.lesson, it=L.teachItems[L.teachI], n=L.teachI+1, total=L.teachItems.length;
+  const L=S.lesson, it=L.teachItems[L.teachI], n=L.teachI+1, total=L.teachItems.length, last=L.teachI===total-1;
+  if(L.sounds){
+    $("app").innerHTML=`<div class="q">
+      <div class="teachcard">
+        <div class="tnum">Sound · ${n} / ${total}</div>
+        <div class="troman" style="font-size:21px;color:var(--indigo);line-height:1.3">${esc(it.rm)}</div>
+        <div class="teachaudio"><button class="speaker big" data-say="${esc(it.te)}">🔊</button>
+          <button class="speaker slow" data-slow="${esc(it.te)}">🐢 slow</button></div>
+        <div class="soundex">e.g. <b>${esc(it.word)}</b> — ${esc(it.gloss)}${S.showScript?` <span style="font-family:var(--tel)">(${it.te})</span>`:""}</div>
+        <div class="tip">💡 ${esc(it.en)}</div>
+      </div></div>
+      <div class="feedback"><button class="btn marigold" data-act="teachnext">${last?"Start practice →":"Got it →"}</button>
+        ${!last?`<div class="skiprow"><button data-act="teachskip">Skip intro, go to practice</button></div>`:""}</div>`;
+    if(L._teachPlayed!==L.teachI){ L._teachPlayed=L.teachI; setTimeout(()=>speak(it.te),250); }
+    return;
+  }
   const chunks=glossChunks(it).filter(c=>c.g);
-  const tip=patternTip(it), reg=register(it), last=L.teachI===total-1;
+  const tip=patternTip(it), reg=register(it);
   const regUI = reg==="casual" ? `<div class="reg casual">👧 Casual — say this to <b>her</b></div>`
     : reg==="resp"   ? `<div class="reg resp">🙏 Respectful — for <b>her parents</b> / elders</div>`
     :                  `<div class="reg neutral">• Works with anyone</div>`;
