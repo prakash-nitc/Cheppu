@@ -1034,41 +1034,58 @@ function ringSVG(pct){ const r=22,c=2*Math.PI*r,off=c*(1-Math.min(1,pct));
     <text x="27" y="32" text-anchor="middle" font-size="15" font-weight="800" fill="#D6890A" font-family="Baloo 2">${Math.round(pct*100)}%</text></svg>`; }
 
 function renderHome(){
-  const un=unlocked();
-  const due=dueItems().length;
-  const goalPct=S.goal>0?S.dayXp/S.goal:1;
+  if(S.page==="foundations") return renderFoundationsPage();
+  if(S.page==="conversations") return renderConversationsPage();
+  if(S.page==="units") return renderUnitsPage();
+  return renderHub();
+}
+function pageHeader(title,sub){
+  return `<div class="pagehead"><button class="backbtn" data-page="hub" aria-label="Back">←</button>
+    <div><div class="pht">${title}</div>${sub?`<div class="phs">${esc(sub)}</div>`:""}</div></div>`;
+}
+function renderHub(){
+  const goalPct=S.goal>0?S.dayXp/S.goal:1, due=dueItems().length;
+  const reviewReady=Object.keys(S.crowns).length>0;
+  const card=(attr,ic,col,title,sub,disabled)=>`<button class="hubcard${disabled?' locked':''}" ${attr} ${disabled?'disabled':''}>
+    <div class="hubic" style="background:${col}">${ic}</div>
+    <div class="hubtx"><div class="hubt">${title}</div><div class="hubs">${sub}</div></div>
+    <div class="hubgo">›</div></button>`;
+  const fdone=FOUNDATIONS.filter(f=>S.crowns[f.id]).length;
   let h=`<div class="hero"><div class="big">చెప్పు</div>
     <h1>Let's speak Telugu</h1><p>Hear it, build it, say it out loud.</p></div>`;
   h+=`<div class="dailywrap"><div class="goalcard">${ringSVG(goalPct)}
     <div><div class="gt">Daily goal</div><div class="gs">${S.dayXp} / ${S.goal} XP today</div></div></div></div>`;
-  h+=`<div class="convsec"><div class="convhead">📚 Foundations — learn Telugu from the basics</div>${
-    FOUNDATIONS.map(f=>{ const fdone=!!S.crowns[f.id];
-      return `<button class="convcard" data-found="${f.id}" style="border-left:5px solid ${f.unit.color}">
-        <div><div class="cvt">Level ${f.n} · ${esc(f.title)}</div>
-        <div class="cvs">${fdone?"Completed ✓ — tap to revisit":"Understand how Telugu works, then build it yourself"}</div></div>
-        <div class="gobadge" style="background:${f.unit.color};box-shadow:0 3px 0 ${f.unit.accent}">GO</div></button>`; }).join("")}</div>`;
-  const soundsDone=!!S.crowns["__sounds"];
-  h+=`<button class="reviewcard" data-act="sounds" style="background:linear-gradient(135deg,#fff,#E3F2FB)">
-    <div class="ri">🔊</div><div><div class="rt">Learn the sounds</div>
-    <div class="rs">${soundsDone?"Pronunciation basics ✓ — tap to revisit":"New here? Start with how Telugu actually sounds"}</div></div>
-    <div class="rb" style="background:#0277BD;box-shadow:0 3px 0 #015a92">GO</div></button>`;
-  const patDone=!!S.crowns["__patterns"];
-  h+=`<button class="reviewcard" data-act="patterns" style="background:linear-gradient(135deg,#fff,#EFE9FA)">
-    <div class="ri">🧩</div><div><div class="rt">Build your own sentences</div>
-    <div class="rs">${patDone?"Sentence patterns ✓ — tap to revisit":"Learn to swap words and make your own lines"}</div></div>
-    <div class="rb" style="background:#5E35B1;box-shadow:0 3px 0 #42268a">GO</div></button>`;
-  const reviewReady = un>0 || Object.keys(S.crowns).length>0;
-  h+=`<button class="reviewcard ${reviewReady&&due?'':'locked'}" data-act="review" ${reviewReady&&due?'':'disabled'}>
-    <div class="ri">🔁</div><div><div class="rt">Practice weak words</div>
-    <div class="rs">${reviewReady?(due?due+" phrase"+(due>1?"s":"")+" due for review":"All caught up — come back later"):"Finish a lesson to unlock"}</div></div>
-    ${reviewReady&&due?`<div class="rb">GO</div>`:""}</button>`;
-  h+=`<div class="convsec"><div class="convhead">🎭 Practice a real conversation</div>${
-    DIALOGUES.map(d=>{ const done=!!S.crowns["__dlg_"+d.id];
-      return `<button class="convcard" data-dlg="${d.id}">
-        <div><div class="cvt">${d.who} · ${esc(d.title)}</div>
-        <div class="cvs">${d.register==="casual"?"Casual — for her":"Respectful — for her parents"}${done?" · done ✓":""}</div></div>
-        <div class="gobadge" style="background:${d.color};box-shadow:0 3px 0 ${d.accent}">GO</div></button>`; }).join("")}</div>`;
-  let g=0;
+  h+=`<div class="hubsec">Start here</div>`;
+  h+=card('data-page="foundations"','📚','#00897B','Foundations',`Learn Telugu from the basics${fdone?` · ${fdone}/${FOUNDATIONS.length} done`:''}`);
+  h+=card('data-act="sounds"','🔊','#0277BD','Sounds','How Telugu actually sounds');
+  h+=card('data-act="patterns"','🧩','#5E35B1','Build sentences','Swap words, make your own lines');
+  h+=`<div class="hubsec">Practise</div>`;
+  h+=card('data-page="conversations"','🎭','#C2185B','Conversations',`${DIALOGUES.length} real chats — her &amp; her family`);
+  h+=card(due?'data-act="review"':'','🔁','#D6890A','Review weak words', reviewReady?(due?`${due} due now`:'All caught up — come back later'):'Finish a lesson to unlock', !(reviewReady&&due));
+  h+=card('data-page="units"','📘','#4B3D9E','Phrase units',`${ORDER.length} situational lessons`);
+  $("app").innerHTML=h;
+}
+function renderFoundationsPage(){
+  let h=pageHeader("📚 Foundations","Concepts first, then practice — basics to advanced");
+  h+=`<div class="convsec">${FOUNDATIONS.map(f=>{ const fdone=!!S.crowns[f.id];
+    return `<button class="convcard" data-found="${f.id}" style="border-left:5px solid ${f.unit.color}">
+      <div><div class="cvt">Level ${f.n} · ${esc(f.title)}</div>
+      <div class="cvs">${fdone?"Completed ✓ — tap to revisit":"Understand how it works, then build it yourself"}</div></div>
+      <div class="gobadge" style="background:${f.unit.color};box-shadow:0 3px 0 ${f.unit.accent}">GO</div></button>`; }).join("")}</div>`;
+  $("app").innerHTML=h;
+}
+function renderConversationsPage(){
+  let h=pageHeader("🎭 Conversations","Choose your reply in a real exchange");
+  h+=`<div class="convsec">${DIALOGUES.map(d=>{ const done=!!S.crowns["__dlg_"+d.id];
+    return `<button class="convcard" data-dlg="${d.id}" style="border-left:5px solid ${d.color}">
+      <div><div class="cvt">${d.who} · ${esc(d.title)}</div>
+      <div class="cvs">${d.register==="casual"?"Casual — for her":"Respectful — for her family"}${done?" · done ✓":""}</div></div>
+      <div class="gobadge" style="background:${d.color};box-shadow:0 3px 0 ${d.accent}">GO</div></button>`; }).join("")}</div>`;
+  $("app").innerHTML=h;
+}
+function renderUnitsPage(){
+  const un=unlocked();
+  let h=pageHeader("📘 Phrase units","Useful phrases for real situations"), g=0;
   UNITS.forEach(u=>{
     h+=`<div class="unit"><div class="unit-head" style="background:linear-gradient(135deg,${u.color},${u.accent})">
       <div><div class="n">Unit ${u.n}</div><h2>${u.title}</h2></div><div class="tel">${u.te}</div></div><div class="path">`;
