@@ -488,6 +488,79 @@ const norm=s=>String(s).toLowerCase().replace(/[\s.,?!"'’]/g,"");
 const WORDS=[...new Set(ALL.flatMap(it=>it.rm.split(/\s+/).map(w=>w.replace(/[?.,!]/g,""))))].filter(w=>w.length>1);
 const wc=it=>it.rm.split(/\s+/).length;
 
+/* ---------- 1b. TEACHING LAYER: word glosses, register, pattern tips ---------- */
+/* One dictionary glosses the words used across all phrases, so the Learn cards
+   can break any phrase down word-by-word (and power substitution drills later). */
+const GLOSS={
+  // greetings & basics
+  namaskaaram:"greetings", avunu:"yes", ledu:"no / not", dhanyavaadaalu:"thanks",
+  saree:"okay", dayachesi:"please", kshaminchandi:"sorry / excuse me", parledu:"it's okay",
+  manchidi:"good", emaindi:"what happened", oka:"one / a", nimisham:"minute", andi:"(polite)",
+  manche:"only good", antaa:"everything", chaalaa:"very / a lot", konchem:"a little", inkonchem:"a little more",
+  // pronouns & people
+  nenu:"I", naa:"my", naaku:"to me", naatho:"with me", nuvvu:"you", nee:"your",
+  ninnu:"you (obj.)", nuvvante:"you (regarding)", meeru:"you (resp.)", meeku:"to you (resp.)",
+  mee:"your (resp.)", maa:"our / my", tanani:"her", iddaru:"two (people)",
+  amma:"mother", nanna:"father", akka:"elder sister", annayya:"elder brother",
+  chelli:"younger sister", tammudu:"younger brother", thaatha:"grandfather", ammamma:"grandmother",
+  kutumbam:"family", pillalu:"children",
+  // be / have / want / like
+  undi:"is / there is", unnaavu:"you are", unte:"if (you) are", untaanu:"I live / stay",
+  untaavu:"you live / stay", untaavaa:"will you be?", kaavaali:"is wanted", kaavaalaa:"do you want?",
+  ishtam:"liking", chaalu:"enough", nachindi:"liked",
+  // questions & how-are-you
+  baagunnaavaa:"are you well?", baagunnaanu:"I'm well", baagunnaaraa:"are you well? (resp.)",
+  baagaa:"well / very", ela:"how", enti:"what", emi:"what", emaina:"anything",
+  ekkada:"where", eppudu:"when", enta:"how much", peru:"name", artham:"meaning",
+  kaaledu:"didn't happen", malli:"again", cheppu:"say it", cheppindi:"what (you) said",
+  ayyindi:"happened", telugu:"Telugu", vachu:"(I) know", vache:"(I) know", vachindi:"came",
+  nerchukovaali:"must learn", chestaavu:"you do", chestaanu:"I'll do", chey:"do / call",
+  chuskuntaanu:"I'll look after", sahaayam:"help",
+  // feelings & the "...gaa undi" pattern
+  santosham:"happiness / glad", santoshamgaa:"happily", baadhagaa:"sadly", kopam:"anger",
+  bhayamgaa:"fearfully", saradaagaa:"playfully", aakaligaa:"hungrily", alasatagaa:"tiredly",
+  ruchigaa:"tasty", andangaa:"beautifully", avutundi:"will become",
+  // love
+  preemistunnaanu:"I love", praanam:"life / soul", navvu:"smile", eppatikee:"forever",
+  vadalanu:"I won't leave", prapancham:"world", pakkana:"beside", miss:"miss", avutunnaanu:"I'm …-ing",
+  // food & things
+  annam:"rice / meal", neellu:"water", bhojanam:"meal", kadupu:"stomach", nindindi:"got full",
+  tea:"tea", paalu:"milk", kuura:"curry", kaaram:"spicy", teepi:"sweet", idi:"this", lo:"in",
+  // out & about / shopping / plans
+  ekkuva:"too much", ippudu:"now", veldaam:"let's go", veldaamaa:"shall we go?", tagginchandi:"please reduce",
+  bill:"bill", card:"card", teesukuntaaraa:"do you take?", phone:"phone",
+  kaluddaam:"let's meet", kalustaanu:"I'll meet", sinimaaki:"to a movie", repu:"tomorrow",
+  tappakundaa:"definitely", taruvaata:"later", time:"time", vastaanu:"I'll come",
+  // time / days
+  eeroju:"today", ninna:"yesterday",
+  // numbers
+  okati:"one", rendu:"two", muudu:"three", naalugu:"four", aidu:"five", aaru:"six",
+  eedu:"seven", enimidi:"eight", tommidi:"nine", padi:"ten",
+  // directions
+  ikkada:"here", akkada:"there", kudivaipu:"to the right", edamavaipu:"to the left",
+  nerugaa:"straight", vellandi:"go (please)", aagandi:"stop (please)",
+  // names
+  hyderabad:"Hyderabad", ravi:"(a name)",
+};
+const glossKey=w=>w.toLowerCase().replace(/[?.,!]/g,"");
+function glossChunks(it){ return it.rm.split(/\s+/).map(w=>({w, g:GLOSS[glossKey(w)]||""})); }
+function register(it){
+  const s=it.rm.toLowerCase();
+  if(/\bandi\b|andi\?|inchandi|\bmeeru\b|\bmeeku\b|\bmee\b|baagunnaaraa|vellandi|aagandi|tagginchandi|teesukuntaaraa/.test(s)) return "resp";
+  if(/\bnuvvu\b|\bnee\b|\bninnu\b|nuvvante|naavaa|naavu|baagunnaavaa|\bcheppu\b|\bchey\b|untaavaa|veldaam|veldaamaa|kaluddaam/.test(s)) return "casual";
+  return "neutral";
+}
+function patternTip(it){
+  const s=it.rm.toLowerCase();
+  if(/kaavaali\b/.test(s))  return "Pattern: naaku + (thing) + kaavaali = “I want (thing)”.";
+  if(/\bishtam\b/.test(s))  return "Pattern: naaku + X + ishtam = “I like X”.";
+  if(/gaa undi\b/.test(s))  return "Pattern: naaku + (feeling)gaa undi = “I feel (feeling)”.";
+  if(/daam/.test(s))        return "Ending -daam = “let’s …” (veldaam = let’s go).";
+  if(/andi\b/.test(s))      return "Adding -andi makes it polite — use it with elders.";
+  if(/aavaa\b|aaraa\b/.test(s)) return "Ending in -aa turns it into a yes/no question.";
+  return "";
+}
+
 /* ---------- 2. STORAGE (safe localStorage + memory fallback) ---------- */
 const mem = {};
 function lsGet(k){ try{ const v=localStorage.getItem(k); return v==null?mem[k]:v; }catch(e){ return mem[k]; } }
