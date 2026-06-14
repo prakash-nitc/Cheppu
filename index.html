@@ -928,6 +928,12 @@ function renderHome(){
     <div class="ri">🔁</div><div><div class="rt">Practice weak words</div>
     <div class="rs">${reviewReady?(due?due+" phrase"+(due>1?"s":"")+" due for review":"All caught up — come back later"):"Finish a lesson to unlock"}</div></div>
     ${reviewReady&&due?`<div class="rb">GO</div>`:""}</button>`;
+  h+=`<div class="convsec"><div class="convhead">🎭 Practice a real conversation</div>${
+    DIALOGUES.map(d=>{ const done=!!S.crowns["__dlg_"+d.id];
+      return `<button class="convcard" data-dlg="${d.id}">
+        <div><div class="cvt">${d.who} · ${esc(d.title)}</div>
+        <div class="cvs">${d.register==="casual"?"Casual — for her":"Respectful — for her parents"}${done?" · done ✓":""}</div></div>
+        <div class="gobadge" style="background:${d.color};box-shadow:0 3px 0 ${d.accent}">GO</div></button>`; }).join("")}</div>`;
   let g=0;
   UNITS.forEach(u=>{
     h+=`<div class="unit"><div class="unit-head" style="background:linear-gradient(135deg,${u.color},${u.accent})">
