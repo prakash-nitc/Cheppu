@@ -895,7 +895,7 @@ function renderBar(){
     <div class="stat xp"><span class="ic">⭐</span>${S.xp}</div></div>`;
 }
 function renderNav(){
-  if(["lesson","complete","fail"].includes(S.screen)){ $("nav").innerHTML=""; return; }
+  if(["lesson","complete","fail","dialogue","dlgdone"].includes(S.screen)){ $("nav").innerHTML=""; return; }
   const t=S.tab;
   $("nav").innerHTML=`
     <button class="${t==='learn'?'on':''}" data-tab="learn"><span class="ic">🏠</span>Learn</button>
