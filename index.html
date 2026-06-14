@@ -1563,11 +1563,12 @@ function render(){
 
 /* ---------- 8. EVENTS ---------- */
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-say],[data-slow],[data-tab],[data-lesson],[data-act],[data-pick],[data-scen],[data-tut],[data-mode],[data-tile],[data-built],[data-mcell],[data-dlg],[data-dchoice],[data-found]");
+  const t=e.target.closest("[data-say],[data-slow],[data-tab],[data-lesson],[data-act],[data-pick],[data-scen],[data-tut],[data-mode],[data-tile],[data-built],[data-mcell],[data-dlg],[data-dchoice],[data-found],[data-page]");
   if(!t) return;
   if(t.dataset.slow!=null){ speak(t.dataset.slow,.5); return; }
   if(t.dataset.say!=null){ speak(t.dataset.say); if(t.dataset.mcell==null && !t.closest(".opt")) return; }
-  if(t.dataset.tab){ S.tab=t.dataset.tab; S.screen="home"; render(); return; }
+  if(t.dataset.tab){ S.tab=t.dataset.tab; S.screen="home"; S.page="hub"; render(); return; }
+  if(t.dataset.page){ S.page=t.dataset.page; S.screen="home"; S.tab="learn"; render(); return; }
   if(t.dataset.scen){ S.chat.scenario=t.dataset.scen; S.chat.msgs=[]; render(); return; }
   if(t.dataset.tut){ S.chat.tutor=t.dataset.tut; S.chat.msgs=[]; render(); return; }
   if(t.dataset.mode){ S.chat.mode=t.dataset.mode; S.chat.msgs=[]; render(); return; }
