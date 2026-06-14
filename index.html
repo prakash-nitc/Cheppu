@@ -1137,6 +1137,11 @@ function renderLesson(){
       <div style="display:flex;gap:10px">
         <button class="btn ghost" style="flex:1" data-act="speakmeh">Needs work 🔁</button>
         <button class="btn" style="flex:1" data-act="speakgot">I nailed it ✓</button></div></div>`;
+  } else if(q.type==="fillin" && L.checked){
+    const ok=L.correct, full=q.p.frame.replace("___", q.ex.fill);
+    footer=`<div class="feedback ${ok?'ok':'no'}"><div class="fmsg">${ok?"✓ "+PRAISE[Math.random()*PRAISE.length|0]:"✗ Not quite"}
+      <span class="ans">${esc(full)} — ${esc(q.p.en.replace("___",q.ex.filEn))}</span></div>
+      <button class="btn ${ok?'':'red'}" data-act="next">Continue</button></div>`;
   } else if(!L.checked){
     const isBuild=q.type==="build"||q.type==="hearbuild";
     const ready=isBuild ? (q.built&&q.built.length===q.answer.length) : false;
