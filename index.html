@@ -1351,6 +1351,60 @@ const DIALOGUES=[
        {rm:"saree", te:"సరే", en:"Okay (too curt)"},
      ]},
    ]},
+ { id:"cafe", title:"A coffee date", who:"💗 Her", register:"casual", color:"#4B3D9E", accent:"#352a73",
+   turns:[
+     {them:{rm:"namaskaaram, baagunnaavaa?", te:"నమస్కారం, బాగున్నావా?", en:"Hi, how are you?"}},
+     {you:[
+       {rm:"avunu, nenu baagunnaanu", te:"అవును, నేను బాగున్నాను", en:"Yes, I'm fine", ok:true},
+       {rm:"idi enta?", te:"ఇది ఎంత?", en:"How much is this?"},
+       {rm:"ledu", te:"లేదు", en:"No"},
+     ]},
+     {them:{rm:"neeku emi kaavaali?", te:"నీకు ఏమి కావాలి?", en:"What would you like?"}},
+     {you:[
+       {rm:"naaku tea kaavaali", te:"నాకు టీ కావాలి", en:"I want tea", ok:true},
+       {rm:"naaku alasatagaa undi", te:"నాకు అలసటగా ఉంది", en:"I'm tired"},
+       {rm:"ekkada?", te:"ఎక్కడ?", en:"Where?"},
+     ]},
+     {them:{rm:"tea ela undi?", te:"టీ ఎలా ఉంది?", en:"How's the tea?"}},
+     {you:[
+       {rm:"chaalaa ruchigaa undi", te:"చాలా రుచిగా ఉంది", en:"Very tasty", ok:true},
+       {rm:"naaku aakaligaa undi", te:"నాకు ఆకలిగా ఉంది", en:"I'm hungry"},
+       {rm:"veldaam", te:"వెళ్దాం", en:"Let's go"},
+     ]},
+     {them:{rm:"malli eppudu kaluddaam?", te:"మళ్ళీ ఎప్పుడు కలుద్దాం?", en:"When shall we meet again?"}},
+     {you:[
+       {rm:"repu kaluddaam", te:"రేపు కలుద్దాం", en:"Let's meet tomorrow", ok:true},
+       {rm:"naaku artham kaaledu", te:"నాకు అర్థం కాలేదు", en:"I don't understand"},
+       {rm:"tagginchandi", te:"తగ్గించండి", en:"Please reduce the price"},
+     ]},
+   ]},
+ { id:"kitchen", title:"In the kitchen with her mom", who:"🙏 Her mom", register:"resp", color:"#D6890A", accent:"#a36800",
+   turns:[
+     {them:{rm:"neeku aakaligaa undaa?", te:"నీకు ఆకలిగా ఉందా?", en:"Are you hungry?"}},
+     {you:[
+       {rm:"avunu andi, konchem", te:"అవును అండి, కొంచెం", en:"Yes, a little (polite)", ok:true},
+       {rm:"ledu, veldaam", te:"లేదు, వెళ్దాం", en:"No, let's go"},
+       {rm:"idi enta?", te:"ఇది ఎంత?", en:"How much is this?"},
+     ]},
+     {them:{rm:"bhojanam inkaa kaaledu", te:"భోజనం ఇంకా కాలేదు", en:"The food isn't ready yet"}},
+     {you:[
+       {rm:"parledu, nenu sahaayam chestaanu", te:"పర్లేదు, నేను సహాయం చేస్తాను", en:"No problem, I'll help", ok:true},
+       {rm:"naaku aakaligaa undi", te:"నాకు ఆకలిగా ఉంది", en:"I'm hungry"},
+       {rm:"malli cheppu", te:"మళ్ళీ చెప్పు", en:"Say it again (too casual)"},
+     ]},
+     {them:{rm:"chaalaa manchi abbaayivi", te:"చాలా మంచి అబ్బాయివి", en:"You're such a good boy"}},
+     {you:[
+       {rm:"dhanyavaadaalu andi", te:"ధన్యవాదాలు అండి", en:"Thank you (polite)", ok:true},
+       {rm:"avunu", te:"అవును", en:"Yes (too curt)"},
+       {rm:"veldaam", te:"వెళ్దాం", en:"Let's go"},
+     ]},
+     {them:{rm:"bhojanam cheddaam, raandi", te:"భోజనం చేద్దాం, రండి", en:"Let's eat, come"}},
+     {you:[
+       {rm:"tappakundaa andi", te:"తప్పకుండా అండి", en:"Certainly (polite)", ok:true},
+       {rm:"naaku time ledu", te:"నాకు టైం లేదు", en:"I don't have time"},
+       {rm:"ekkada?", te:"ఎక్కడ?", en:"Where?"},
+     ]},
+   ]},
 ];
 function startDialogue(id){ const d=DIALOGUES.find(x=>x.id===id); if(!d)return;
   S.dialogue={d, i:0, wrong:[], _played:-1}; S.screen="dialogue"; render(); }
