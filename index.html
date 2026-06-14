@@ -871,6 +871,13 @@ function toast(ic,title,sub){
 }
 
 function renderBar(){
+  if(S.screen==="dialogue"){ const D=S.dialogue;
+    const total=D.d.turns.filter(t=>t.you).length, done=D.d.turns.slice(0,D.i).filter(t=>t.you).length;
+    const p=total?Math.round(done/total*100):0;
+    $("bar").innerHTML=`<div class="lesson-top">
+      <button class="close" data-act="dlghome" aria-label="Quit">✕</button>
+      <div class="pbar"><i style="width:${p}%"></i></div>
+      <div class="lhearts" style="font-size:13px;color:${D.d.accent}">${esc(D.d.who)}</div></div>`; return; }
   if(S.screen==="lesson" && S.lesson.phase==="teach"){ const L=S.lesson, p=Math.round(L.teachI/L.teachItems.length*100);
     $("bar").innerHTML=`<div class="lesson-top">
       <button class="close" data-act="quit" aria-label="Quit">✕</button>
