@@ -1012,6 +1012,15 @@ function renderLesson(){
     if(!q._autoplayed){ q._autoplayed=true; setTimeout(()=>speak(q.it.te),250); }
   }
 
+  if(q.type==="hearpick"){
+    body=`<div class="q"><p class="prompt">Which sound is in this word?</p>
+      <div style="text-align:center"><button class="speaker big" data-say="${esc(q.it.te)}">🔊</button>
+        <div style="margin-top:8px"><button class="speaker slow" data-slow="${esc(q.it.te)}">🐢 slow</button></div>
+        <div style="margin-top:10px;font-weight:800;font-size:18px">${esc(q.it.word)}</div></div>
+      <div class="options">${q.options.map(o=>`<button class="opt" data-pick="${esc(o)}" data-ans="${esc(q.it.rm)}">${esc(o)}</button>`).join("")}</div></div>`;
+    setTimeout(()=>speak(q.it.te),250);
+  }
+
   // footer
   if(q.type==="match"){
     const m=q.mstate;
