@@ -1026,6 +1026,12 @@ function renderHome(){
     <h1>Let's speak Telugu</h1><p>Hear it, build it, say it out loud.</p></div>`;
   h+=`<div class="dailywrap"><div class="goalcard">${ringSVG(goalPct)}
     <div><div class="gt">Daily goal</div><div class="gs">${S.dayXp} / ${S.goal} XP today</div></div></div></div>`;
+  h+=`<div class="convsec"><div class="convhead">📚 Foundations — learn Telugu from the basics</div>${
+    FOUNDATIONS.map(f=>{ const fdone=!!S.crowns[f.id];
+      return `<button class="convcard" data-found="${f.id}" style="border-left:5px solid ${f.unit.color}">
+        <div><div class="cvt">Level ${f.n} · ${esc(f.title)}</div>
+        <div class="cvs">${fdone?"Completed ✓ — tap to revisit":"Understand how Telugu works, then build it yourself"}</div></div>
+        <div class="gobadge" style="background:${f.unit.color};box-shadow:0 3px 0 ${f.unit.accent}">GO</div></button>`; }).join("")}</div>`;
   const soundsDone=!!S.crowns["__sounds"];
   h+=`<button class="reviewcard" data-act="sounds" style="background:linear-gradient(135deg,#fff,#E3F2FB)">
     <div class="ri">🔊</div><div><div class="rt">Learn the sounds</div>
