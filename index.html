@@ -1191,11 +1191,102 @@ function renderMe(){
     <a class="linkbtn" data-act="reset">Reset all progress</a>`;
 }
 
+/* ---------- 7c. CONVERSATION PRACTICE (scripted branching dialogues, offline) ---------- */
+const DIALOGUES=[
+ { id:"her", title:"A chat with her", who:"💗 Her", register:"casual", color:"#0E8C72", accent:"#0A6E59",
+   turns:[
+     {them:{rm:"baagunnaavaa?", te:"బాగున్నావా?", en:"How are you?"}},
+     {you:[
+       {rm:"avunu, nenu baagunnaanu", te:"అవును, నేను బాగున్నాను", en:"Yes, I'm fine", ok:true},
+       {rm:"idi enta?", te:"ఇది ఎంత?", en:"How much is this?"},
+       {rm:"ekkada?", te:"ఎక్కడ?", en:"Where?"},
+     ]},
+     {them:{rm:"nee peru enti?", te:"నీ పేరు ఏంటి?", en:"What's your name?"}},
+     {you:[
+       {rm:"naa peru Ravi", te:"నా పేరు రవి", en:"My name is Ravi", ok:true},
+       {rm:"naaku neellu kaavaali", te:"నాకు నీళ్ళు కావాలి", en:"I want water"},
+       {rm:"malli cheppu", te:"మళ్ళీ చెప్పు", en:"Say it again"},
+     ]},
+     {them:{rm:"naaku nuvvante ishtam", te:"నాకు నువ్వంటే ఇష్టం", en:"I like you"}},
+     {you:[
+       {rm:"nenu ninnu preemistunnaanu", te:"నేను నిన్ను ప్రేమిస్తున్నాను", en:"I love you", ok:true},
+       {rm:"naaku alasatagaa undi", te:"నాకు అలసటగా ఉంది", en:"I'm tired"},
+       {rm:"veldaam", te:"వెళ్దాం", en:"Let's go"},
+     ]},
+     {them:{rm:"repu kaluddaam", te:"రేపు కలుద్దాం", en:"Let's meet tomorrow"}},
+     {you:[
+       {rm:"saree, tappakundaa vastaanu", te:"సరే, తప్పకుండా వస్తాను", en:"Okay, I'll definitely come", ok:true},
+       {rm:"naaku artham kaaledu", te:"నాకు అర్థం కాలేదు", en:"I don't understand"},
+       {rm:"idi enta?", te:"ఇది ఎంత?", en:"How much is this?"},
+     ]},
+   ]},
+ { id:"parents", title:"Dinner with her parents", who:"🙏 Her parents", register:"resp", color:"#C2185B", accent:"#8e1143",
+   turns:[
+     {them:{rm:"namaskaaram", te:"నమస్కారం", en:"Hello / greetings"}},
+     {you:[
+       {rm:"namaskaaram andi", te:"నమస్కారం అండి", en:"Hello (polite)", ok:true},
+       {rm:"enti?", te:"ఏంటి?", en:"What? (blunt)"},
+       {rm:"baagunnaavaa?", te:"బాగున్నావా?", en:"How are you? (too casual for elders)"},
+     ]},
+     {them:{rm:"bhojanam ela undi?", te:"భోజనం ఎలా ఉంది?", en:"How is the meal?"}},
+     {you:[
+       {rm:"bhojanam chaalaa ruchigaa undi", te:"భోజనం చాలా రుచిగా ఉంది", en:"The food is very tasty", ok:true},
+       {rm:"naaku aakaligaa undi", te:"నాకు ఆకలిగా ఉంది", en:"I'm hungry"},
+       {rm:"idi chaalaa kaaram", te:"ఇది చాలా కారం", en:"This is too spicy"},
+     ]},
+     {them:{rm:"malli raandi", te:"మళ్ళీ రండి", en:"Come again"}},
+     {you:[
+       {rm:"tappakundaa, malli kalustaanu andi", te:"తప్పకుండా, మళ్ళీ కలుస్తాను అండి", en:"Definitely, I'll meet you again (polite)", ok:true},
+       {rm:"saree", te:"సరే", en:"Okay (too curt)"},
+       {rm:"naaku time ledu", te:"నాకు టైం లేదు", en:"I don't have time"},
+     ]},
+     {them:{rm:"jaagrattagaa vellandi", te:"జాగ్రత్తగా వెళ్ళండి", en:"Go safely"}},
+     {you:[
+       {rm:"dhanyavaadaalu andi", te:"ధన్యవాదాలు అండి", en:"Thank you (polite)", ok:true},
+       {rm:"ekkada?", te:"ఎక్కడ?", en:"Where?"},
+       {rm:"saree", te:"సరే", en:"Okay (too curt)"},
+     ]},
+   ]},
+];
+function startDialogue(id){ const d=DIALOGUES.find(x=>x.id===id); if(!d)return;
+  S.dialogue={d, i:0, wrong:[], _played:-1}; S.screen="dialogue"; render(); }
+function pickReply(idx){ const D=S.dialogue, turn=D.d.turns[D.i], opt=turn.you[idx]; speak(opt.te);
+  if(opt.ok){ sfx("right"); buzz(15); D.i++; D.wrong=[]; D._played=-1;
+    if(D.i>=D.d.turns.length) return finishDialogue(); render(); }
+  else { if(!D.wrong.includes(idx)) D.wrong.push(idx); sfx("wrong"); buzz(30); renderDialogue(); } }
+function finishDialogue(){ const D=S.dialogue, key="__dlg_"+D.d.id, first=!S.crowns[key];
+  S.crowns[key]=1; D.earned=first?14:6; addXp(D.earned); bumpStreak(); checkAch(); saveProgress();
+  sfx("win"); buzz([30,60,30]); S.screen="dlgdone"; render(); }
+function renderDialogue(){
+  const D=S.dialogue, turn=D.d.turns[D.i]; let tr="";
+  const themBubble=t=>`<div class="bubble them">${esc(t.rm)} <button class="play" data-say="${esc(t.te)}">🔊</button><div class="bsub">${esc(t.en)}</div></div>`;
+  for(let k=0;k<D.i;k++){ const tn=D.d.turns[k];
+    if(tn.them) tr+=themBubble(tn.them);
+    else { const oko=tn.you.find(o=>o.ok); tr+=`<div class="bubble me">${esc(oko.rm)}<div class="bsub">${esc(oko.en)}</div></div>`; } }
+  let bottom="";
+  if(turn.them){ tr+=themBubble(turn.them);
+    bottom=`<div class="dlg-replies"><button class="btn" data-act="dlgnext">Continue</button></div>`;
+    if(D._played!==D.i){ D._played=D.i; setTimeout(()=>speak(turn.them.te),300); } }
+  else { bottom=`<div class="dlg-who">Choose your reply</div><div class="dlg-replies">${
+    turn.you.map((o,idx)=>`<button class="opt ${D.wrong.includes(idx)?'wrong':''}" data-dchoice="${idx}">
+      ${esc(o.rm)}<span class="sub">${esc(o.en)}</span></button>`).join("")}</div>`; }
+  $("app").innerHTML=`<div class="dlg-wrap"><div class="dlg-scroll" id="dlgsc">${tr}</div>${bottom}</div>`;
+  const sc=$("dlgsc"); if(sc) sc.scrollTop=sc.scrollHeight;
+}
+function renderDlgDone(){ const D=S.dialogue;
+  $("app").innerHTML=`<div class="center-screen"><div class="emoji">🎉</div>
+    <h2>Conversation done!</h2><p>${esc(D.d.title)}</p>
+    <div class="pills"><div class="pill xp"><div class="k">+${D.earned}</div><div class="v">XP</div></div>
+      <div class="pill"><div class="k">🔥${S.streak}</div><div class="v">Streak</div></div></div>
+    <button class="btn" data-act="dlghome">Continue</button></div>`; }
+
 function render(){
   renderBar(); renderNav();
   if(S.screen==="lesson") return (S.lesson.phase==="teach" ? renderTeach() : renderLesson());
   if(S.screen==="complete") return renderComplete();
   if(S.screen==="fail") return renderFail();
+  if(S.screen==="dialogue") return renderDialogue();
+  if(S.screen==="dlgdone") return renderDlgDone();
   if(S.tab==="learn") return renderHome();
   if(S.tab==="book") return renderBook();
   if(S.tab==="chat") return renderChat();
