@@ -1064,19 +1064,6 @@ function handleMatch(cell){
   }
 }
 
-function doMic(btn){
-  const q=S.lesson.queue[0]; if(q._live)return; q._live=true; renderLesson();
-  listenOnce(q.it.te, res=>{
-    q._live=false;
-    if(res.unsupported){ q.heard="Speech input not supported — tap Skip."; renderLesson(); return; }
-    if(res.error){ q.heard = res.error==="not-allowed" ? "Mic permission needed." : "Didn't catch that — try again."; renderLesson(); return; }
-    q.heard = `You said: <b>${esc(res.heard)}</b>`;
-    const ok=res.score>=0.55; q.score=res.score;
-    setSpoke();
-    grade(ok,q.it);
-  });
-}
-
 /* chat mic: dictate Telugu into the composer (separate from lesson scoring) */
 function doChatMic(){
   if(!recog || S.chat.live) return;
