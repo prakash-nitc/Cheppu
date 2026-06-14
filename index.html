@@ -875,6 +875,29 @@ function renderHome(){
   $("app").innerHTML=h;
 }
 
+function renderTeach(){
+  const L=S.lesson, it=L.teachItems[L.teachI], n=L.teachI+1, total=L.teachItems.length;
+  const chunks=glossChunks(it).filter(c=>c.g);
+  const tip=patternTip(it), reg=register(it), last=L.teachI===total-1;
+  const regUI = reg==="casual" ? `<div class="reg casual">👧 Casual — say this to <b>her</b></div>`
+    : reg==="resp"   ? `<div class="reg resp">🙏 Respectful — for <b>her parents</b> / elders</div>`
+    :                  `<div class="reg neutral">• Works with anyone</div>`;
+  $("app").innerHTML=`<div class="q">
+    <div class="teachcard">
+      <div class="tnum">New phrase · ${n} / ${total}</div>
+      <div class="troman">${esc(it.rm)}</div>
+      ${S.showScript?`<div class="tel">${it.te}</div>`:""}
+      <div class="ten">“${esc(it.en)}”</div>
+      <div class="teachaudio"><button class="speaker big" data-say="${esc(it.te)}">🔊</button>
+        <button class="speaker slow" data-slow="${esc(it.te)}">🐢 slow</button></div>
+      ${chunks.length?`<div class="chunks">${chunks.map(c=>`<div class="ch"><b>${esc(c.w)}</b><span>${esc(c.g)}</span></div>`).join("")}</div>`:""}
+      ${tip?`<div class="tip">💡 ${esc(tip)}</div>`:""}
+      ${regUI}
+    </div></div>
+    <div class="feedback"><button class="btn marigold" data-act="teachnext">${last?"Start practice →":"Got it →"}</button>
+      ${!last?`<div class="skiprow"><button data-act="teachskip">Skip intro, go to practice</button></div>`:""}</div>`;
+  if(L._teachPlayed!==L.teachI){ L._teachPlayed=L.teachI; setTimeout(()=>speak(it.te),250); }
+}
 function renderLesson(){
   const L=S.lesson,q=L.queue[0]; let body="",footer="";
 
