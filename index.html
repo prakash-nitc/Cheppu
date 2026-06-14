@@ -619,27 +619,43 @@ function bumpStreak(){ const t=todayStr();
     S.streak=(S.last===y)?S.streak+1:1; S.last=t; } }
 const PRAISE=["Baagundi! (nice)","Adhurs! (awesome)","Super!","Correct!","Keka! (great)","Sehbaash! (well done)"];
 
-/* ---------- 5b. SPEECH RECOGNITION (speaking practice) ---------- */
-function lev(a,b){ a=[...a]; b=[...b]; const m=a.length,n=b.length;
-  const d=Array.from({length:m+1},()=>new Array(n+1).fill(0));
-  for(let i=0;i<=m;i++)d[i][0]=i; for(let j=0;j<=n;j++)d[0][j]=j;
-  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)
-    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
-  return d[m][n]; }
-function similarity(a,b){ a=norm(a); b=norm(b); if(!a||!b)return 0; return 1 - lev(a,b)/Math.max(a.length,b.length); }
-let rec=null;
-function listenOnce(targetTe, onDone){
-  if(!recog){ onDone({unsupported:true}); return; }
-  try{ if(rec) rec.abort(); }catch(e){}
-  rec=new recog(); rec.lang="te-IN"; rec.interimResults=false; rec.maxAlternatives=3;
-  let got=false;
-  rec.onresult=e=>{ got=true; let best=0,heard="";
-    for(const r of e.results) for(const alt of r){ const s=similarity(alt.transcript,targetTe);
-      if(s>best){ best=s; heard=alt.transcript; } }
-    onDone({heard, score:best}); };
-  rec.onerror=e=>{ if(!got) onDone({error:e.error||"error"}); };
-  rec.onend=()=>{ if(!got) onDone({error:"nospeech"}); };
-  try{ rec.start(); }catch(e){ onDone({error:"start"}); }
+/* ---------- 5b. SPEAKING PRACTICE (self-rated; optional on-device record) ----------
+   No speech is ever uploaded. Self-rating needs no mic and works offline.
+   "Hear yourself" records locally via MediaRecorder and plays it back so you can
+   compare against the native audio — the recording never leaves the device. */
+function mediaOK(){ return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder); }
+let mediaRec=null, mediaStream=null, recChunks=[], recTimer=null;
+function cleanupStream(){ if(mediaStream){ try{ mediaStream.getTracks().forEach(t=>t.stop()); }catch(e){} mediaStream=null; } }
+function stopRec(){ if(recTimer){ clearTimeout(recTimer); recTimer=null; }
+  try{ if(mediaRec && mediaRec.state!=="inactive") mediaRec.stop(); }catch(e){} }
+function cleanupRec(q){ stopRec(); cleanupStream();
+  if(q && q.recUrl){ try{ URL.revokeObjectURL(q.recUrl); }catch(e){} q.recUrl=null; } if(q){ q._rec=false; } }
+async function toggleRec(){
+  const q=S.lesson&&S.lesson.queue[0]; if(!q) return;
+  if(q._rec){ stopRec(); return; }
+  if(!mediaOK()){ q._recErr="Recording isn't supported in this browser."; renderLesson(); return; }
+  try{ mediaStream=await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ q._recErr="Mic access is needed to record — you can still self-rate without it."; renderLesson(); return; }
+  try{ mediaRec=new MediaRecorder(mediaStream); }
+  catch(e){ q._recErr="Recording isn't supported in this browser."; cleanupStream(); renderLesson(); return; }
+  recChunks=[]; q._recErr=null;
+  mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size) recChunks.push(e.data); };
+  mediaRec.onstop=()=>{ const blob=new Blob(recChunks,{type:(mediaRec&&mediaRec.mimeType)||"audio/webm"});
+    if(q.recUrl){ try{ URL.revokeObjectURL(q.recUrl); }catch(e){} }
+    q.recUrl=URL.createObjectURL(blob); q._rec=false; cleanupStream(); renderLesson(); };
+  q._rec=true; try{ mediaRec.start(); }catch(e){ q._rec=false; cleanupStream(); }
+  renderLesson();
+  recTimer=setTimeout(()=>{ if(q._rec) stopRec(); }, 8000); // safety auto-stop
+}
+function playRec(){ const q=S.lesson&&S.lesson.queue[0];
+  if(q&&q.recUrl){ try{ new Audio(q.recUrl).play().catch(()=>{}); }catch(e){} } }
+function rateSpeak(ok){
+  const L=S.lesson, q=L&&L.queue[0]; if(!q) return;
+  setSpoke(); srsUpdate(q.it.rm, ok); L.done++;
+  if(ok){ L.combo++; L.bestCombo=Math.max(L.bestCombo,L.combo); sfx("right"); buzz(15); }
+  else { L.combo=0; }
+  cleanupRec(q);
+  L.correct=true; nextQ(); // speak is a practice rep — it always advances, never costs a heart
 }
 
 /* ---------- 6. CONVERSATION PARTNER (your Groq key) ---------- */
