@@ -1198,7 +1198,7 @@ document.addEventListener("click",e=>{
   else if(a==="rec"){ toggleRec(); }
   else if(a==="playrec"){ playRec(); }
   else if(a==="next"){ nextQ(); }
-  else if(a==="retry"){ S.lesson.review?startReview():startLesson(S.lesson.lesson.id); }
+  else if(a==="retry"){ S.lesson.sounds?startSounds():(S.lesson.review?startReview():startLesson(S.lesson.lesson.id)); }
   else if(a==="home"){ S.screen="home"; S.tab="learn"; render(); }
   else if(a==="togglescript"){ S.showScript=!S.showScript; lsSet("showScript",S.showScript?"1":"0"); render(); }
   else if(a==="togglesound"){ S.sound=!S.sound; lsSet("sound",S.sound?"1":"0"); if(S.sound)sfx("tap"); render(); }
