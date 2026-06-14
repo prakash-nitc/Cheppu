@@ -1283,6 +1283,15 @@ function renderMe(){
     <p class="note"><b>Audio:</b> uses your device's built-in Telugu voice. Phones usually have one; some laptops don't, so audio may be silent there.<br><br>
     <b>Speaking practice:</b> you say each phrase aloud and rate yourself — no mic permission needed, and it works offline. Optionally tap “Hear yourself” to record and compare against the native audio; that recording stays on your device and is never uploaded.<br><br>
     <b>Speak for real:</b> these drills are your daily warm-up — using the phrases with your girlfriend and getting corrected by a native speaker is what builds true confidence.</p>
+    <div class="prof-card">
+      <div class="prof-row" style="border:none;padding-bottom:6px"><span>💾 Backup &amp; restore</span></div>
+      <div style="font-size:13px;color:var(--ink-soft);font-weight:500;line-height:1.5">Progress is saved only in this browser. Copy this code to keep it safe or move it to another device. Your API key is never included.</div>
+      <textarea id="backupbox" class="backupbox" readonly>${esc(exportData())}</textarea>
+      <div class="keyfield"><button data-act="copybackup" style="flex:1">📋 Copy code</button></div>
+      <div style="font-size:13px;color:var(--ink-soft);font-weight:500;margin-top:8px">To restore, paste a code below and tap Restore.</div>
+      <textarea id="restorebox" class="backupbox" placeholder="Paste backup code here…"></textarea>
+      <div class="keyfield"><button data-act="dorestore" style="flex:1">⤵ Restore</button></div>
+    </div>
     <a class="linkbtn" data-act="reset">Reset all progress</a>`;
 }
 
