@@ -639,6 +639,27 @@ function resetProgress(){ S.xp=0;S.streak=0;S.last=null;S.crowns={};S.srs={};S.a
   ["xp","streak","last","crowns","srs","ach","seen","dayXp"].forEach(lsDel); render(); }
 function addXp(n){ S.xp+=n; S.dayXp+=n; }
 
+/* ---------- 4a. BACKUP & RESTORE (no server; a copy-paste code) ---------- */
+const BACKUP_KEYS=["xp","streak","last","crowns","srs","ach","seen","dayXp","dayDate","goal","showScript","sound"];
+function exportData(){ const o={v:1};
+  BACKUP_KEYS.forEach(k=>{ const val=lsGet(k); if(val!=null&&val!=="") o[k]=String(val); });
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(o)))); }catch(e){ return ""; } }
+function reloadState(){
+  S.xp=+(lsGet("xp")||0); S.streak=+(lsGet("streak")||0); S.last=lsGet("last")||null;
+  S.crowns=jget("crowns",{}); S.srs=jget("srs",{}); S.ach=jget("ach",{}); S.seen=jget("seen",{});
+  S.goal=+(lsGet("goal")||30); S.dayDate=lsGet("dayDate")||null; S.dayXp=+(lsGet("dayXp")||0);
+  S.showScript=lsGet("showScript")==="1"; S.sound=lsGet("sound")!=="0";
+  const t=todayStr(); if(S.dayDate!==t){ S.dayDate=t; S.dayXp=0; lsSet("dayDate",t); lsSet("dayXp",0); } }
+function importData(code){
+  try{ const o=JSON.parse(decodeURIComponent(escape(atob(String(code).trim()))));
+    if(!o||typeof o!=="object"||!o.v) return false;
+    BACKUP_KEYS.forEach(k=>{ if(o[k]!=null) lsSet(k,String(o[k])); });
+    reloadState(); return true;
+  }catch(e){ return false; } }
+function copyText(text,cb){
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>cb(true)).catch(()=>cb(false)); return; }
+  try{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); cb(true); }catch(e){ cb(false); } }
+
 /* ---------- 4b. SPACED REPETITION ---------- */
 const SRS_DAYS=[0,1,3,7,16,45];
 function srsUpdate(rm,ok){
