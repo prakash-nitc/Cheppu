@@ -1405,6 +1405,7 @@ document.addEventListener("click",e=>{
   if(a==="quit"){ if(S.lesson&&S.lesson.queue[0]) cleanupRec(S.lesson.queue[0]); else { stopRec(); cleanupStream(); } S.screen="home"; S.tab="learn"; render(); }
   else if(a==="review"){ startReview(); }
   else if(a==="sounds"){ startSounds(); }
+  else if(a==="patterns"){ startPatterns(); }
   else if(a==="dlgnext"){ const D=S.dialogue; D.i++; D.wrong=[]; D._played=-1;
     if(D.i>=D.d.turns.length) finishDialogue(); else render(); }
   else if(a==="dlghome"){ S.dialogue=null; S.screen="home"; S.tab="learn"; render(); }
