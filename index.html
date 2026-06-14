@@ -1108,14 +1108,24 @@ function renderChat(){
     if(m.role==="user") return `<div class="bubble me">${esc(m.content)}</div>`;
     return `<div class="bubble them">${esc(m.content)}<button class="play" data-say="${esc(m.content.replace(/\(.*?\)/g,''))}">🔊</button></div>`;
   }).join("");
-  if(!S.chat.msgs.length) msgs=`<div class="bubble sys">${hasKey?"Say hi to start — type or use 🎤, in English or romanized Telugu.":"Add your free Groq key in the You tab to start practicing real conversations."}</div>`;
+  const tutorMode=S.chat.mode==="tutor";
+  if(!S.chat.msgs.length) msgs=`<div class="bubble sys">${
+    !hasKey ? "Add your free Groq key in the You tab to start." :
+    tutorMode ? "Ask anything — e.g. “how do I say I’ll call you tomorrow?” — or just say hi for a coached drill." :
+                "Say hi to start — type or use 🎤, in English or romanized Telugu."}</div>`;
   if(S.chat.busy) msgs+=`<div class="bubble them">…</div>`;
-  const sc=Object.entries(SCENARIOS).map(([k,v])=>`<button class="${S.chat.scenario===k?'on':''}" data-scen="${k}">${v.label}</button>`).join("");
+  const pills=(tutorMode
+    ? Object.entries(TUTORS).map(([k,v])=>`<button class="${S.chat.tutor===k?'on':''}" data-tut="${k}">${v.label}</button>`)
+    : Object.entries(SCENARIOS).map(([k,v])=>`<button class="${S.chat.scenario===k?'on':''}" data-scen="${k}">${v.label}</button>`)
+  ).join("");
   $("app").innerHTML=`<div class="chat-wrap">
-    <div class="scenario">${sc}</div>
+    <div class="modeseg">
+      <button class="${tutorMode?'':'on'}" data-mode="roleplay">💬 Role-play</button>
+      <button class="${tutorMode?'on':''}" data-mode="tutor">🎓 Tutor</button></div>
+    <div class="scenario">${pills}</div>
     <div class="msgs" id="msgs">${msgs}</div>
     <div class="composer">
-      <input id="chatin" placeholder="${hasKey?'Type your reply…':'Add Groq key first →'}" ${hasKey?'':'disabled'} />
+      <input id="chatin" placeholder="${hasKey?(tutorMode?'Ask, or type your attempt…':'Type your reply…'):'Add Groq key first →'}" ${hasKey?'':'disabled'} />
       ${recog&&hasKey?`<button class="micbtn ${S.chat.live?'live':''}" data-act="chatmic">🎤</button>`:""}
       <button class="send" data-act="send" ${hasKey?'':'disabled'}>➤</button></div></div>`;
   const m=$("msgs"); if(m) m.scrollTop=m.scrollHeight;
