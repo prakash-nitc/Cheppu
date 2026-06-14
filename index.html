@@ -678,11 +678,44 @@ function startReview(){
     combo:0, bestCombo:0, level:0, review:true};
   S.screen="lesson"; render();
 }
+/* Pronunciation primer — a standalone "Sounds" lesson (not part of the unit path,
+   so it never gates existing progress). Audio uses real example words for reliability. */
+const SOUND_LESSON={ id:"__sounds", name:"The sounds of Telugu", sounds:true,
+  unit:{title:"Pronunciation", color:"#0277BD", accent:"#015a92"},
+  items:[
+    {rm:"Long vowels — aa, ee, oo", te:"మూడు", word:"muudu", gloss:"three",
+      en:"Doubled vowels are held a beat longer. ‘muudu’ stretches the ‘oo’; a single vowel is short and clipped."},
+    {rm:"Doubled consonants", te:"అమ్మ", word:"amma", gloss:"mother",
+      en:"A doubled consonant is held with a tiny pause. ‘amma’ is am‑ma — clearly longer than a single ‘m’."},
+    {rm:"Hard ‘t’ — tongue curled back", te:"ఒకటి", word:"okati", gloss:"one",
+      en:"Curl your tongue back and tap the roof of the mouth — the ‘ti’ in okati. It sounds harder than an English ‘t’."},
+    {rm:"Soft ‘th’ — tongue on teeth", te:"తాత", word:"thaatha", gloss:"grandfather",
+      en:"Tongue against the upper teeth, gentle — the ‘th’ in thaatha. It is NOT the English ‘th’ in ‘think’."},
+    {rm:"Breathy ‘dh’ / ‘bh’", te:"ధన్యవాదాలు", word:"dhanyavaadaalu", gloss:"thank you",
+      en:"Release a small puff of air. ‘dh’ in dhanyavaadaalu (thanks), ‘bh’ in bhojanam (meal)."},
+    {rm:"Deep ‘ll’ (curled back)", te:"నీళ్ళు", word:"neellu", gloss:"water",
+      en:"A thick ‘l’ with the tongue curled back, as in neellu (water) — different from a plain, light ‘l’."},
+  ]};
+function buildSoundQueue(items){
+  const q=[];
+  for(let r=0;r<2;r++) shuffle(items).forEach(it=>{
+    const opts=shuffle([it.rm, ...shuffle(items.filter(x=>x.rm!==it.rm)).slice(0,2).map(x=>x.rm)]);
+    q.push({type:"hearpick", it, options:opts});
+  });
+  return q;
+}
+function startSounds(){
+  const first=!S.crowns["__sounds"], queue=buildSoundQueue(SOUND_LESSON.items);
+  S.lesson={lesson:SOUND_LESSON, queue, total:queue.length, done:0, miss:0, hearts:5, sel:null, checked:false, correct:false,
+    combo:0, bestCombo:0, level:(S.crowns["__sounds"]||0), review:false, sounds:true,
+    phase:first?"teach":"drill", teachItems:SOUND_LESSON.items, teachI:0};
+  S.screen="lesson"; render();
+}
 function grade(ok,it){
   const L=S.lesson; L.checked=true; L.correct=ok;
   if(ok){ L.done++; L.combo++; L.bestCombo=Math.max(L.bestCombo,L.combo); sfx("right"); buzz(20); }
   else { L.hearts--; L.miss++; L.combo=0; sfx("wrong"); buzz([40,40,40]); }
-  if(it) srsUpdate(it.rm, ok);
+  if(it && !(L&&L.sounds)) srsUpdate(it.rm, ok);   // sounds aren't phrases — keep them out of review/SRS
   render();
 }
 function nextQ(){ const L=S.lesson;
