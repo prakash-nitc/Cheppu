@@ -1295,7 +1295,7 @@ function render(){
 
 /* ---------- 8. EVENTS ---------- */
 document.addEventListener("click",e=>{
-  const t=e.target.closest("[data-say],[data-slow],[data-tab],[data-lesson],[data-act],[data-pick],[data-scen],[data-tut],[data-mode],[data-tile],[data-built],[data-mcell]");
+  const t=e.target.closest("[data-say],[data-slow],[data-tab],[data-lesson],[data-act],[data-pick],[data-scen],[data-tut],[data-mode],[data-tile],[data-built],[data-mcell],[data-dlg],[data-dchoice]");
   if(!t) return;
   if(t.dataset.slow!=null){ speak(t.dataset.slow,.5); return; }
   if(t.dataset.say!=null){ speak(t.dataset.say); if(t.dataset.mcell==null && !t.closest(".opt")) return; }
