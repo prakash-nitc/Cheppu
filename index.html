@@ -280,6 +280,19 @@
   .reg.neutral{background:#EFEAE0;color:var(--ink-soft)}
   .soundex{background:var(--paper-2);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:16px;font-weight:700;font-size:14px;color:var(--ink-soft)}
   .soundex b{color:var(--ink);font-size:16px}
+  /* conversation practice */
+  .bubble .bsub{font-size:12px;opacity:.72;font-weight:600;margin-top:3px}
+  .bubble.me .bsub{color:#ece8f7;opacity:.85}
+  .dlg-wrap{display:flex;flex-direction:column;height:calc(100vh - 150px)}
+  .dlg-scroll{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:8px 2px}
+  .dlg-who{text-align:center;font-weight:800;color:var(--ink-soft);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:6px 0 2px}
+  .dlg-replies{display:grid;gap:10px;padding:8px 2px calc(10px + env(safe-area-inset-bottom))}
+  .convsec{margin-top:14px}
+  .convhead{font-family:var(--disp);font-weight:800;font-size:14px;margin:6px 2px 8px}
+  .convcard{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow);text-align:left}
+  .convcard .cvt{font-family:var(--disp);font-weight:800;font-size:14.5px}
+  .convcard .cvs{color:var(--ink-soft);font-weight:700;font-size:12px;margin-top:1px}
+  .gobadge{margin-left:auto;color:#fff;font-family:var(--disp);font-weight:800;font-size:13px;padding:9px 14px;border-radius:12px}
 
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
