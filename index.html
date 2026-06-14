@@ -644,7 +644,7 @@ let S = { tab:"learn", screen:"home",
   seen:jget("seen",{}),
   showScript: lsGet("showScript")==="1",
   sound: lsGet("sound")!=="0",
-  lesson:null, dialogue:null, search:"",
+  lesson:null, dialogue:null, page:"hub", search:"",
   chat:{mode:"roleplay", scenario:"gf", tutor:"tutor", msgs:[], busy:false} };
 
 function todayStr(){ return new Date().toISOString().slice(0,10); }
