@@ -812,6 +812,11 @@ function toast(ic,title,sub){
 }
 
 function renderBar(){
+  if(S.screen==="lesson" && S.lesson.phase==="teach"){ const L=S.lesson, p=Math.round(L.teachI/L.teachItems.length*100);
+    $("bar").innerHTML=`<div class="lesson-top">
+      <button class="close" data-act="quit" aria-label="Quit">✕</button>
+      <div class="pbar" style="background:#EBE2D2"><i style="width:${p}%;background:linear-gradient(90deg,var(--marigold),var(--marigold-deep))"></i></div>
+      <div class="lhearts" style="color:var(--marigold-deep);font-size:13px">LEARN</div></div>`; return; }
   if(S.screen==="lesson"){ const L=S.lesson,p=Math.round(L.done/L.total*100);
     $("bar").innerHTML=`<div class="lesson-top">
       <button class="close" data-act="quit" aria-label="Quit">✕</button>
